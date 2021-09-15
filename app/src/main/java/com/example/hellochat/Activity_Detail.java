@@ -1,6 +1,7 @@
 package com.example.hellochat;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -54,6 +55,7 @@ public class Activity_Detail extends AppCompatActivity {
     TextView writer, parent;
     RelativeLayout relativelayout;
     int page = 1, limit = 5;
+    int feed , user;
     private static final String TAG = "Activity_Detail";
 
     @Override
@@ -125,9 +127,24 @@ public class Activity_Detail extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 10){
+            if(resultCode != 11){
+                return;
+            }
+            getDetail(feed,user,page,limit);
+        }
+
+
+    }
+
     public void getDetail(int feed_idx, int user_idx, int page, int limit) {
         NewsfeedApi service = RetrofitClientInstance.getRetrofitInstance().create(NewsfeedApi.class);
         Call<DetailResult> call = service.get_detail(feed_idx, user_idx, page, limit);
+        feed = feed_idx ;
+        user = user_idx;
         call.enqueue(new Callback<DetailResult>() {
             @Override
             public void onResponse(Call<DetailResult> call, Response<DetailResult> response) {
@@ -140,6 +157,7 @@ public class Activity_Detail extends AppCompatActivity {
                     Log.d(TAG, "onResponse: setadapter");
                     mRecyclerView.setAdapter(mAdapter);
                     mAdapter.notifyDataSetChanged();
+                    //댓글 아이템 클릭
                     mAdapter.setOnCommentClickListener(new DetailAdapter.OnCommentClickListener() {
                         @Override
                         public void onCommentClickListener(View v, int pos) {
@@ -151,12 +169,14 @@ public class Activity_Detail extends AppCompatActivity {
                             relativelayout.setVisibility(View.VISIBLE);
                         }
                     });
+                    //글 좋아요 클릭
                     mAdapter.setOnClickListener(new DetailAdapter.OnLikeClick() {
                         @Override
                         public void onLikeClick(View v, int pos) {
                             ClickHeart(feed_idx, user_idx, page, limit);
                         }
                     });
+                    //답글 수정삭제버튼
                     mAdapter.setOnMoreBntClick_Reply(new DetailAdapter.OnMoreBntClick_Reply() {
                         @Override
                         public void onMoreBntClick_Reply(View v, int pos) {
@@ -167,8 +187,9 @@ public class Activity_Detail extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     if (which == 0) {
                                         Intent intent = new Intent(Activity_Detail.this, Activity_modify_comment.class);
+                                        intent.putExtra("contents" , datainfo.get(pos).contents);
                                         intent.putExtra("comment_idx", datainfo.get(pos).comment_idx);
-                                        startActivity(intent);
+                                        startActivityForResult(intent , 10);
                                     } else if (which == 1) {
                                         Delete_Reply(datainfo.get(pos).comment_idx, feed_idx, user_idx, page, limit);
                                     }
@@ -178,6 +199,7 @@ public class Activity_Detail extends AppCompatActivity {
                             alertDialog.show();
                         }
                     });
+                    //댓글 수정삭제버튼
                     mAdapter.setOnMoreBntClick_Comment(new DetailAdapter.OnMoreBntClick_Comment() {
                         @Override
                         public void onMoreBntClick_Comment(View v, int pos) {
@@ -188,8 +210,9 @@ public class Activity_Detail extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     if (which == 0) {
                                         Intent intent = new Intent(Activity_Detail.this, Activity_modify_comment.class);
+                                        intent.putExtra("contents" , datainfo.get(pos).contents);
                                         intent.putExtra("comment_idx", datainfo.get(pos).comment_idx);
-                                        startActivity(intent);
+                                        startActivityForResult(intent , 10);
                                     } else if (which == 1) {
                                         Delete_Comment(datainfo.get(pos).comment_idx, feed_idx, user_idx, page, limit);
                                     }
@@ -209,7 +232,6 @@ public class Activity_Detail extends AppCompatActivity {
         });
     }
 
-
     public void setComment(int feed_idx, int user_idx, String comment, int parent, int page, int limit) {
         NewsfeedApi service = RetrofitClientInstance.getRetrofitInstance().create(NewsfeedApi.class);
         Call<ResultData> call = service.set_comment(feed_idx, user_idx, comment, parent);
@@ -228,7 +250,6 @@ public class Activity_Detail extends AppCompatActivity {
 
 
     }
-
 
     //리사이클러뷰 구분선 없앤거
     public class DividerItemDecoration extends RecyclerView.ItemDecoration {
@@ -266,7 +287,6 @@ public class Activity_Detail extends AppCompatActivity {
             }
         }
     }
-
 
     public void ClickHeart(int feed_idx, int user_idx, int page, int limit) {
         NewsfeedApi service = RetrofitClientInstance.getRetrofitInstance().create(NewsfeedApi.class);

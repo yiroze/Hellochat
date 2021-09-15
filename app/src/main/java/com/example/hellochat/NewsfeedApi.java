@@ -83,7 +83,14 @@ public interface NewsfeedApi {
     Call<ResultData> click_like(
             @Field("feed_idx") int feed_idx,
             @Field("user_idx") int user_idx
+    );
 
+
+    @FormUrlEncoded
+    @POST("update_comment.php")
+    Call<ResultData> update_comment(
+            @Field("comment_idx") int comment_idx,
+            @Field("contents") String contents
     );
 
 
