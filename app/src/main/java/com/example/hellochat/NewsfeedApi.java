@@ -1,10 +1,14 @@
 package com.example.hellochat;
 
+import com.example.hellochat.DTO.DetailResult;
+import com.example.hellochat.DTO.EditData;
+import com.example.hellochat.DTO.ResultData;
+import com.example.hellochat.DTO.ViewBoardData;
+
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
-import retrofit2.http.Query;
 
 public interface NewsfeedApi {
 

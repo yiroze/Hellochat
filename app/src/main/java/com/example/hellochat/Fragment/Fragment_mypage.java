@@ -1,13 +1,10 @@
-package com.example.hellochat;
+package com.example.hellochat.Fragment;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -17,9 +14,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.jetbrains.annotations.NotNull;
+import com.example.hellochat.LoginApi;
+import com.example.hellochat.DTO.LoginData;
+import com.example.hellochat.R;
 
-import java.util.Objects;
+import org.jetbrains.annotations.NotNull;
 
 import retrofit2.Call;
 import retrofit2.Callback;

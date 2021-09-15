@@ -1,4 +1,4 @@
-package com.example.hellochat;
+package com.example.hellochat.Activity;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -9,14 +9,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import com.example.hellochat.DTO.EditData;
+import com.example.hellochat.NewsfeedApi;
+import com.example.hellochat.R;
+import com.example.hellochat.RetrofitClientInstance;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Activity_Edit extends AppCompatActivity {
     EditText content;

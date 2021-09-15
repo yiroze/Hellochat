@@ -1,5 +1,7 @@
 package com.example.hellochat;
 
+import com.example.hellochat.DTO.LoginData;
+
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;

@@ -1,13 +1,9 @@
-package com.example.hellochat;
+package com.example.hellochat.DTO;
 
 import com.google.gson.annotations.SerializedName;
 
-public class
-ViewData {
+public class DetailData {
 
-
-    @SerializedName("feed_idx")
-    public int feed_idx;
 
     @SerializedName("user_idx")
     public int user_idx;
@@ -51,22 +47,39 @@ ViewData {
     @SerializedName("studylang_level3")
     public int studylang_level3;
 
+    @SerializedName("heart")
+    public int heart;
 
-    @SerializedName("like_cnt")
-    public String like_cnt;
+    @SerializedName("comment")
+    public int comment;
 
-    @SerializedName("comment_cnt")
-    public String comment_cnt;
+    @SerializedName("view_type")
+    public int view_type;
+    //뷰타입  0 =헤더 1 =댓글 2= 대댓글
+
+    @SerializedName("parents")
+    public int parents;
+
+    @SerializedName("comment_idx")
+    public int comment_idx;
 
     @SerializedName("islike")
     public int islike;
 
+    @SerializedName("like_cnt")
+    public int like_cnt;
+
+    @SerializedName("comment_cnt")
+    public int comment_cnt;
+
+    public int getView_type() {
+        return view_type;
+    }
 
     @Override
     public String toString() {
-        return "ViewData{" +
-                "feed_idx='" + feed_idx + '\'' +
-                ", user_idx='" + user_idx + '\'' +
+        return "DetailData{" +
+                "user_idx='" + user_idx + '\'' +
                 ", name='" + name + '\'' +
                 ", profile='" + profile + '\'' +
                 ", mylang='" + mylang + '\'' +
@@ -80,17 +93,16 @@ ViewData {
                 ", studylang_level=" + studylang_level +
                 ", studylang_level2=" + studylang_level2 +
                 ", studylang_level3=" + studylang_level3 +
+                ", heart=" + heart +
+                ", comment=" + comment +
+                ", view_type=" + view_type +
+                ", parents=" + parents +
+                ", comment_idx=" + comment_idx +
+                ", islike=" + islike +
                 ", like_cnt=" + like_cnt +
                 ", comment_cnt=" + comment_cnt +
-                ", islike=" + islike +
                 '}';
     }
 
-    public void setLike_cnt(String like_cnt) {
-        this.like_cnt = like_cnt;
-    }
 
-    public void setIslike(int islike) {
-        this.islike = islike;
-    }
 }

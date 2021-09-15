@@ -5,7 +5,7 @@
     android:layout_width="350dp"
     android:layout_height="wrap_content"
     android:background="#FFFFFF"
-    tools:context=".Activity_modify_comment">
+    tools:context=".Activity.Activity_modify_comment">
 
     <TextView
         android:id="@+id/textView3"

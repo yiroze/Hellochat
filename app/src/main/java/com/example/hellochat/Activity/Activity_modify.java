@@ -1,4 +1,4 @@
-package com.example.hellochat;
+package com.example.hellochat.Activity;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -9,6 +9,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import com.example.hellochat.NewsfeedApi;
+import com.example.hellochat.R;
+import com.example.hellochat.DTO.ResultData;
+import com.example.hellochat.RetrofitClientInstance;
 
 import retrofit2.Call;
 import retrofit2.Callback;

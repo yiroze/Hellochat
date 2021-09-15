@@ -18,14 +18,14 @@
         android:theme="@style/Theme.Hellochat"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".Activity_modify_comment"
+        <activity android:name=".Activity.Activity_modify_comment"
             android:theme="@style/Dialog"
             />
-        <activity android:name=".Activity_Detail" />
+        <activity android:name=".Activity.Activity_Detail" />
         <activity android:name=".level_info" />
-        <activity android:name=".Activity_password" />
-        <activity android:name=".Activity_modify" />
-        <activity android:name=".Activity_Edit" />
+        <activity android:name=".Activity.Activity_password" />
+        <activity android:name=".Activity.Activity_modify" />
+        <activity android:name=".Activity.Activity_Edit" />
         <activity android:name=".Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,9 +34,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".Activity_Login" />
-        <activity android:name=".Activity_Join2" />
-        <activity android:name=".Activity_Join" />
+        <activity android:name=".Activity.Activity_Login" />
+        <activity android:name=".Activity.Activity_Join2" />
+        <activity android:name=".Activity.Activity_Join" />
     </application>
 
 </manifest>

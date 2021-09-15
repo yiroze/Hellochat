@@ -1,19 +1,20 @@
-package com.example.hellochat;
+package com.example.hellochat.DTO;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+import java.util.ArrayList;
 
-public class DetailResult {
+public class ViewBoardData {
+
     @SerializedName("result")
     public String result;
 
     @SerializedName("body")
-    public List<DetailData> body;
+    public ArrayList<ViewData> body;
 
     @Override
     public String toString() {
-        return "DetailResult{" +
+        return "ViewBoardData{" +
                 "result='" + result + '\'' +
                 ", body=" + body +
                 '}';

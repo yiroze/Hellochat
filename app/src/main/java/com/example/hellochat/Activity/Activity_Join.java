@@ -1,11 +1,10 @@
-package com.example.hellochat;
+package com.example.hellochat.Activity;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,7 +13,11 @@ import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
+
+import com.example.hellochat.DTO.CheckEmail;
+import com.example.hellochat.JoinApi;
+import com.example.hellochat.R;
+import com.example.hellochat.RetrofitClientInstance;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,7 +25,6 @@ import java.util.regex.Pattern;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Activity_Join extends AppCompatActivity {
     EditText email , password , check_password , name ;

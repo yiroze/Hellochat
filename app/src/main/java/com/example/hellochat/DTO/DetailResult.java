@@ -1,21 +1,21 @@
-package com.example.hellochat;
+package com.example.hellochat.DTO;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class ResultData {
+public class DetailResult {
     @SerializedName("result")
     public String result;
 
     @SerializedName("body")
-    public String body;
+    public List<DetailData> body;
 
     @Override
     public String toString() {
-        return "ResultData{" +
+        return "DetailResult{" +
                 "result='" + result + '\'' +
-                ", body='" + body + '\'' +
+                ", body=" + body +
                 '}';
     }
 }

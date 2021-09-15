@@ -1,14 +1,15 @@
-package com.example.hellochat;
-
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
+package com.example.hellochat.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.example.hellochat.NewsfeedApi;
+import com.example.hellochat.R;
+import com.example.hellochat.DTO.ResultData;
+import com.example.hellochat.RetrofitClientInstance;
 
 import retrofit2.Call;
 import retrofit2.Callback;

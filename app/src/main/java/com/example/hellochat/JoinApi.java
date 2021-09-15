@@ -1,7 +1,11 @@
 package com.example.hellochat;
 
+import com.example.hellochat.DTO.CheckEmail;
+import com.example.hellochat.DTO.JoinData;
+import com.example.hellochat.DTO.ResultData;
+import com.example.hellochat.DTO.UploadResult;
+
 import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;

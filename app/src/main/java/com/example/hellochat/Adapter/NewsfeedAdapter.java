@@ -1,4 +1,4 @@
-package com.example.hellochat;
+package com.example.hellochat.Adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -19,11 +18,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.hellochat.Activity.Activity_Detail;
+import com.example.hellochat.Activity.Activity_modify;
+import com.example.hellochat.NewsfeedApi;
+import com.example.hellochat.R;
+import com.example.hellochat.DTO.ResultData;
+import com.example.hellochat.RetrofitClientInstance;
+import com.example.hellochat.DTO.ViewData;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;

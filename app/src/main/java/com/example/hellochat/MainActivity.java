@@ -3,8 +3,6 @@ package com.example.hellochat;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
@@ -13,6 +11,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.example.hellochat.Fragment.Fragment_chat;
+import com.example.hellochat.Fragment.Fragment_mypage;
+import com.example.hellochat.Fragment.Fragment_newsfeed;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Objects;
