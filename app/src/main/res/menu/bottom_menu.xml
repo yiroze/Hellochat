@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/chat"
+        android:icon="@drawable/chat"
+        android:title="채팅"
+        android:enabled="true"
+        />
+
+    <item
+        android:id="@+id/newsfeed"
+        android:icon="@drawable/newsfeed"
+        android:title="피드"
+        android:enabled="true"
+        />
+    <item
+        android:id="@+id/mypage"
+        android:icon="@drawable/mypage"
+        android:title="마이페이지"
+        android:enabled="true"
+        />
+
+
+</menu>
