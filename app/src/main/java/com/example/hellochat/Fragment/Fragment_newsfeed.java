@@ -1,5 +1,7 @@
 package com.example.hellochat.Fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -19,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.example.hellochat.Activity.Activity_Edit;
+import com.example.hellochat.Activity.Activity_modify;
 import com.example.hellochat.Adapter.NewsfeedAdapter;
 import com.example.hellochat.NewsfeedApi;
 import com.example.hellochat.R;
@@ -59,7 +62,6 @@ public class Fragment_newsfeed extends Fragment  {
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         datainfo = new ArrayList<>();
         Bundle bundle = getArguments();
-
         if (bundle != null) {
             idx = Integer.parseInt(bundle.getString("idx"));
         } else {
@@ -68,6 +70,7 @@ public class Fragment_newsfeed extends Fragment  {
         //Retrofit 인스턴스 생성
         getdata(idx , page , limit);
 
+        //이 두줄 없애도됨
         mAdapter = new NewsfeedAdapter(datainfo);
         mRecyclerView.setAdapter(mAdapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(), mLinearLayoutManager.getOrientation());
@@ -201,7 +204,29 @@ public class Fragment_newsfeed extends Fragment  {
                             ClickHeart(datainfo.get(position).feed_idx , idx , page , limit);
                         }
                     });
-
+                    mAdapter.setOnMoreClickListener(new NewsfeedAdapter.OnMoreBntClickListener() {
+                        @Override
+                        public void onMoreBntClick(View v, int position) {
+                            String items[] = {"수정하기", "삭제하기"};
+                            AlertDialog.Builder dia = new AlertDialog.Builder(getActivity());
+                            dia.setItems(items, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (which == 0) {
+                                        Intent intent = new Intent(getActivity() , Activity_modify.class);
+                                        Log.d(TAG, "onClick: "+datainfo.get(position).feed_idx);
+                                        intent.putExtra("feed_idx", datainfo.get(position).feed_idx);
+                                        startActivity(intent);
+                                        dialog.dismiss();
+                                    } else if (which == 1) {
+                                        Delete(datainfo.get(position).feed_idx  , page , limit);
+                                    }
+                                }
+                            });
+                            AlertDialog alertDialog = dia.create();
+                            alertDialog.show();
+                        }
+                    });
                 }
             }
 
@@ -219,16 +244,50 @@ public class Fragment_newsfeed extends Fragment  {
             @Override
             public void onResponse(Call<ResultData> call, Response<ResultData> response) {
                 getdata(user_idx , page , limit);
-
             }
-
             @Override
             public void onFailure(Call<ResultData> call, Throwable t) {
-
             }
         });
 
     }
+    public void Delete(int feed_idx , int page , int limit) {
+        AlertDialog.Builder dia = new AlertDialog.Builder(getActivity());
+        dia.setTitle("삭제하시겠습니까?");
+        dia.setPositiveButton("네", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                NewsfeedApi service = RetrofitClientInstance.getRetrofitInstance().create(NewsfeedApi.class);
+                Call<ResultData> call = service.delete_post(feed_idx);
+                call.enqueue(new Callback<ResultData>() {
+                    @Override
+                    public void onResponse(Call<ResultData> call, Response<ResultData> response) {
+                        //메시지 받기
+                        //alert띄우고 리사이클러뷰 새로고침
+                        if (response.isSuccessful()) {
+                            ResultData resultData = response.body();
+                            Log.d(TAG, "onResponse: " + resultData.body);
+                            if (resultData.body.equals("ok")) {
+                                Log.d(TAG, "onResponse: ");
+                                getdata(idx,page ,limit);
+                            } else {
+                            }
+                        }
+                    }
 
+                    @Override
+                    public void onFailure(Call<ResultData> call, Throwable t) {
+                    }
+                });
+            }
+        });
+        dia.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        AlertDialog alertDialog = dia.create();
+        alertDialog.show();
+    }
 
 }

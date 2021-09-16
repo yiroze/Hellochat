@@ -35,7 +35,8 @@ public class Activity_modify extends AppCompatActivity {
         back = (ImageView) findViewById(R.id.back);
         edit = (ImageView) findViewById(R.id.edit);
         Intent intent= getIntent();
-        String feed_idx= intent.getStringExtra("feed_idx");
+        int feed_idx=  intent.getIntExtra("feed_idx" , 0);
+        Log.d(TAG, "onCreate: "+feed_idx);
         NewsfeedApi service = RetrofitClientInstance.getRetrofitInstance().create(NewsfeedApi.class);
         Call<ResultData> call_feed = service.get_content(feed_idx);
         call_feed.enqueue(new Callback<ResultData>() {

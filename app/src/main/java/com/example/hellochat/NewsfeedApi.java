@@ -50,7 +50,7 @@ public interface NewsfeedApi {
     @FormUrlEncoded
     @POST("modifypost_api.php")
     Call<ResultData> modify_post(
-            @Field("feed_idx") String feed_idx,
+            @Field("feed_idx") int feed_idx,
             @Field("contents") String content
 
     );
@@ -59,7 +59,7 @@ public interface NewsfeedApi {
     @FormUrlEncoded
     @POST("get_content.php")
     Call<ResultData> get_content(
-            @Field("feed_idx") String feed_idx
+            @Field("feed_idx") int feed_idx
     );
 
     @FormUrlEncoded

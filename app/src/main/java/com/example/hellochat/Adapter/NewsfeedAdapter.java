@@ -43,11 +43,17 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
     private static final String TAG = "NewsfeedAdapter";
 
     private OnItemClickListener mListener  ;
+    private OnMoreBntClickListener moreBntClickListener  ;
 
     public interface OnItemClickListener {
         void onItemClick(View v, int position) ;
     }
-
+    public interface OnMoreBntClickListener {
+        void onMoreBntClick(View v, int position) ;
+    }
+    public void setOnMoreClickListener(OnMoreBntClickListener listener) {
+        this.moreBntClickListener = listener ;
+    }
     // OnItemClickListener 리스너 객체 참조를 어댑터에 전달하는 메서드
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.mListener = listener ;
@@ -199,23 +205,28 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
                     //alert
-                    String items[] = {"수정하기", "삭제하기"};
-                    AlertDialog.Builder dia = new AlertDialog.Builder(c);
-                    dia.setItems(items, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (which == 0) {
-                                Intent intent = new Intent(c, Activity_modify.class);
-                                intent.putExtra("feed_idx", datalist.get(pos).feed_idx);
-                                v.getContext().startActivity(intent);
-                                dialog.dismiss();
-                            } else if (which == 1) {
-                                Delete(datalist.get(pos).feed_idx, pos);
-                            }
+                    if(pos != RecyclerView.NO_POSITION){
+                        if(moreBntClickListener != null){
+                            moreBntClickListener.onMoreBntClick(v , pos);
                         }
-                    });
-                    AlertDialog alertDialog = dia.create();
-                    alertDialog.show();
+                    }
+//                    String items[] = {"수정하기", "삭제하기"};
+//                    AlertDialog.Builder dia = new AlertDialog.Builder(c);
+//                    dia.setItems(items, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            if (which == 0) {
+//                                Intent intent = new Intent(c, Activity_modify.class);
+//                                intent.putExtra("feed_idx", datalist.get(pos).feed_idx);
+//                                v.getContext().startActivity(intent);
+//                                dialog.dismiss();
+//                            } else if (which == 1) {
+//                                Delete(datalist.get(pos).feed_idx, pos);
+//                            }
+//                        }
+//                    });
+//                    AlertDialog alertDialog = dia.create();
+//                    alertDialog.show();
                 }
             });
 

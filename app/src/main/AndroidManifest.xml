@@ -18,9 +18,10 @@
         android:theme="@style/Theme.Hellochat"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".Activity.Activity_modify_comment"
-            android:theme="@style/Dialog"
-            />
+        <activity android:name=".Activity.Activity_Setting"></activity>
+        <activity
+            android:name=".Activity.Activity_modify_comment"
+            android:theme="@style/Dialog" />
         <activity android:name=".Activity.Activity_Detail" />
         <activity android:name=".level_info" />
         <activity android:name=".Activity.Activity_password" />
