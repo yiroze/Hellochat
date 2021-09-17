@@ -56,6 +56,7 @@ public class Activity_Detail extends AppCompatActivity {
     RelativeLayout relativelayout;
     int page = 1, limit = 5;
     int feed , user;
+    int feednum;
     private static final String TAG = "Activity_Detail";
 
     @Override
@@ -65,7 +66,7 @@ public class Activity_Detail extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         Intent intent = getIntent();
-        int feednum = intent.getIntExtra("feed_idx", 0);
+        feednum = intent.getIntExtra("feed_idx", 0);
         SharedPreferences pref = getSharedPreferences("LOGIN", MODE_PRIVATE);
         String user = pref.getString("Login_data", "");
         int user_idx = Integer.parseInt(user);
@@ -128,6 +129,12 @@ public class Activity_Detail extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        getDetail(feednum , user , page ,limit);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 10){
@@ -158,70 +165,7 @@ public class Activity_Detail extends AppCompatActivity {
                     mRecyclerView.setAdapter(mAdapter);
                     mAdapter.notifyDataSetChanged();
                     //댓글 아이템 클릭
-                    mAdapter.setOnCommentClickListener(new DetailAdapter.OnCommentClickListener() {
-                        @Override
-                        public void onCommentClickListener(View v, int pos) {
-                            Log.d(TAG, "onClick: 뷰타입 1번");
-                            writer.setText(String.format("%s에게 답글", datainfo.get(pos).name));
-                            writer.setVisibility(View.VISIBLE);
-                            String a = String.valueOf(datainfo.get(pos).comment_idx);
-                            parent.setText(a);
-                            relativelayout.setVisibility(View.VISIBLE);
-                        }
-                    });
-                    //글 좋아요 클릭
-                    mAdapter.setOnClickListener(new DetailAdapter.OnLikeClick() {
-                        @Override
-                        public void onLikeClick(View v, int pos) {
-                            ClickHeart(feed_idx, user_idx, page, limit);
-                        }
-                    });
-                    //답글 수정삭제버튼
-                    mAdapter.setOnMoreBntClick_Reply(new DetailAdapter.OnMoreBntClick_Reply() {
-                        @Override
-                        public void onMoreBntClick_Reply(View v, int pos) {
-                            String items[] = {"수정하기", "삭제하기"};
-                            AlertDialog.Builder dia = new AlertDialog.Builder(Activity_Detail.this);
-                            dia.setItems(items, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    if (which == 0) {
-                                        Intent intent = new Intent(Activity_Detail.this, Activity_modify_comment.class);
-                                        intent.putExtra("contents" , datainfo.get(pos).contents);
-                                        intent.putExtra("comment_idx", datainfo.get(pos).comment_idx);
-                                        startActivityForResult(intent , 10);
-                                    } else if (which == 1) {
-                                        Delete_Reply(datainfo.get(pos).comment_idx, feed_idx, user_idx, page, limit);
-                                    }
-                                }
-                            });
-                            AlertDialog alertDialog = dia.create();
-                            alertDialog.show();
-                        }
-                    });
-                    //댓글 수정삭제버튼
-                    mAdapter.setOnMoreBntClick_Comment(new DetailAdapter.OnMoreBntClick_Comment() {
-                        @Override
-                        public void onMoreBntClick_Comment(View v, int pos) {
-                            String items[] = {"수정하기", "삭제하기"};
-                            AlertDialog.Builder dia = new AlertDialog.Builder(Activity_Detail.this);
-                            dia.setItems(items, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    if (which == 0) {
-                                        Intent intent = new Intent(Activity_Detail.this, Activity_modify_comment.class);
-                                        intent.putExtra("contents" , datainfo.get(pos).contents);
-                                        intent.putExtra("comment_idx", datainfo.get(pos).comment_idx);
-                                        startActivityForResult(intent , 10);
-                                    } else if (which == 1) {
-                                        Delete_Comment(datainfo.get(pos).comment_idx, feed_idx, user_idx, page, limit);
-                                    }
-                                }
-                            });
-                            AlertDialog alertDialog = dia.create();
-                            alertDialog.show();
-                        }
-                    });
+                    setClick(mAdapter , feed_idx , user_idx ,page , limit);
                 }
             }
 
@@ -385,5 +329,132 @@ public class Activity_Detail extends AppCompatActivity {
         alertDialog.show();
     }
 
+    public void setClick(DetailAdapter mAdapter ,int feed_idx, int user_idx, int page, int limit ){
+        mAdapter.setOnCommentClickListener(new DetailAdapter.OnCommentClickListener() {
+            @Override
+            public void onCommentClickListener(View v, int pos) {
+                Log.d(TAG, "onClick: 뷰타입 1번");
+                writer.setText(String.format("%s에게 답글", datainfo.get(pos).name));
+                writer.setVisibility(View.VISIBLE);
+                String a = String.valueOf(datainfo.get(pos).comment_idx);
+                parent.setText(a);
+                relativelayout.setVisibility(View.VISIBLE);
+            }
+        });
+        //글 좋아요 클릭
+        mAdapter.setOnClickListener(new DetailAdapter.OnLikeClick() {
+            @Override
+            public void onLikeClick(View v, int pos) {
+                ClickHeart(feed_idx, user_idx, page, limit);
+            }
+        });
+        //답글 수정삭제버튼
+        mAdapter.setOnMoreBntClick_Reply(new DetailAdapter.OnMoreBntClick_Reply() {
+            @Override
+            public void onMoreBntClick_Reply(View v, int pos) {
+                String items[] = {"수정하기", "삭제하기"};
+                AlertDialog.Builder dia = new AlertDialog.Builder(Activity_Detail.this);
+                dia.setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {
+                            Intent intent = new Intent(Activity_Detail.this, Activity_modify_comment.class);
+                            intent.putExtra("contents" , datainfo.get(pos).contents);
+                            intent.putExtra("comment_idx", datainfo.get(pos).comment_idx);
+                            startActivityForResult(intent , 10);
+                        } else if (which == 1) {
+                            Delete_Reply(datainfo.get(pos).comment_idx, feed_idx, user_idx, page, limit);
+                        }
+                    }
+                });
+                AlertDialog alertDialog = dia.create();
+                alertDialog.show();
+            }
+        });
+        //댓글 수정삭제버튼
+        mAdapter.setOnMoreBntClick_Comment(new DetailAdapter.OnMoreBntClick_Comment() {
+            @Override
+            public void onMoreBntClick_Comment(View v, int pos) {
+                String items[] = {"수정하기", "삭제하기"};
+                AlertDialog.Builder dia = new AlertDialog.Builder(Activity_Detail.this);
+                dia.setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {
+                            Intent intent = new Intent(Activity_Detail.this, Activity_modify_comment.class);
+                            intent.putExtra("contents" , datainfo.get(pos).contents);
+                            intent.putExtra("comment_idx", datainfo.get(pos).comment_idx);
+                            startActivityForResult(intent , 10);
+                        } else if (which == 1) {
+                            Delete_Comment(datainfo.get(pos).comment_idx, feed_idx, user_idx, page, limit);
+                        }
+                    }
+                });
+                AlertDialog alertDialog = dia.create();
+                alertDialog.show();
+            }
+        });
+        mAdapter.setOnMoreBntClick_Contents(new DetailAdapter.OnMoreBntClick_Contents() {
+            @Override
+            public void onMoreBntClick_Contents(View v, int pos) {
+                String items[] = {"수정하기", "삭제하기"};
+                AlertDialog.Builder dia = new AlertDialog.Builder(Activity_Detail.this);
+                dia.setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {
+                            Intent intent = new Intent(Activity_Detail.this , Activity_modify.class);
+                            intent.putExtra("feed_idx", feednum);
+                            startActivity(intent);
 
+                        } else if (which == 1) {
+                            Delete(feednum);
+                        }
+                    }
+                });
+                AlertDialog alertDialog = dia.create();
+                alertDialog.show();
+            }
+        });
+
+    }
+
+    public void Delete(int feed_idx) {
+        AlertDialog.Builder dia = new AlertDialog.Builder(Activity_Detail.this);
+        dia.setTitle("삭제하시겠습니까?");
+        dia.setPositiveButton("네", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                NewsfeedApi service = RetrofitClientInstance.getRetrofitInstance().create(NewsfeedApi.class);
+                Call<ResultData> call = service.delete_post(feed_idx);
+                call.enqueue(new Callback<ResultData>() {
+                    @Override
+                    public void onResponse(Call<ResultData> call, Response<ResultData> response) {
+                        //메시지 받기
+                        //alert띄우고 리사이클러뷰 새로고침
+                        if (response.isSuccessful()) {
+                            ResultData resultData = response.body();
+                            Log.d(TAG, "onResponse: " + resultData.body);
+                            if (resultData.body.equals("ok")) {
+                                Log.d(TAG, "onResponse: ");
+                                finish();
+                            } else {
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResultData> call, Throwable t) {
+                    }
+                });
+            }
+        });
+        dia.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        AlertDialog alertDialog = dia.create();
+        alertDialog.show();
+    }
 }

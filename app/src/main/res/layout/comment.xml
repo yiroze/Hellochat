@@ -238,6 +238,7 @@
         app:layout_constraintVertical_bias="0.4" />
 
     <TextView
+        android:textSize="20sp"
         android:id="@+id/contents"
         android:layout_width="370dp"
         android:layout_height="wrap_content"

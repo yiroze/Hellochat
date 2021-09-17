@@ -29,8 +29,9 @@ public class Activity_modify extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
-
         setContentView(R.layout.activity_modify);
+
+
         content = (EditText) findViewById(R.id.content);
         back = (ImageView) findViewById(R.id.back);
         edit = (ImageView) findViewById(R.id.edit);

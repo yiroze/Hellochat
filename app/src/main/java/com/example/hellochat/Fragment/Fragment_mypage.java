@@ -262,9 +262,3 @@ public class Fragment_mypage extends Fragment {
 
 
 }
-//로그아웃
-//        logout.setOnClickListener(v -> {
-//            Intent intent = new Intent( getActivity() , Activity_Login.class);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//            startActivity(intent);
-//        });

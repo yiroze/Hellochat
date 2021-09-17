@@ -35,6 +35,7 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private OnMoreBntClick_Comment comment_bnt = null;
     private OnMoreBntClick_Reply reply_bnt = null;
     private OnCommentClickListener commentClickListener = null;
+    private OnMoreBntClick_Contents contents_bnt = null;
 
     @Override
     public int getItemViewType(int position) {
@@ -141,13 +142,13 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         .into(commentViewHolder.profile);
             }
             //수정삭제 버튼
-            if(!datalist.get(position).contents.equals("삭제된 댓글입니다.")){
+            if (!datalist.get(position).contents.equals("삭제된 댓글입니다.")) {
                 if (datalist.get(position).user_idx != user_idx) {
                     commentViewHolder.more.setVisibility(View.GONE);
                 } else {
                     commentViewHolder.more.setVisibility(View.VISIBLE);
                 }
-            }else {
+            } else {
                 commentViewHolder.more.setVisibility(View.GONE);
             }
 
@@ -333,9 +334,9 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 @Override
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
-                    if(pos != RecyclerView.NO_POSITION){
-                        if(reply_bnt != null){
-                            reply_bnt.onMoreBntClick_Reply(v , pos);
+                    if (pos != RecyclerView.NO_POSITION) {
+                        if (reply_bnt != null) {
+                            reply_bnt.onMoreBntClick_Reply(v, pos);
                         }
                     }
                 }
@@ -390,6 +391,17 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     }
                 }
             });
+            more.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();
+                    if (pos != RecyclerView.NO_POSITION) {
+                        if(contents_bnt != null){
+                            contents_bnt.onMoreBntClick_Contents(v , pos);
+                        }
+                    }
+                }
+            });
 
 
         }
@@ -413,11 +425,14 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public interface OnMoreBntClick_Reply {
         void onMoreBntClick_Reply(View v, int pos);
     }
+
     public interface OnCommentClickListener {
         void onCommentClickListener(View v, int pos);
     }
 
-
+    public interface OnMoreBntClick_Contents {
+        void onMoreBntClick_Contents(View v, int pos);
+    }
 
 
     public void setOnClickListener(OnLikeClick listener) {
@@ -431,7 +446,12 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void setOnMoreBntClick_Reply(OnMoreBntClick_Reply listener) {
         this.reply_bnt = listener;
     }
-    public void setOnCommentClickListener(OnCommentClickListener listener){
+
+    public void setOnMoreBntClick_Contents(OnMoreBntClick_Contents listener) {
+        this.contents_bnt = listener;
+    }
+
+    public void setOnCommentClickListener(OnCommentClickListener listener) {
         this.commentClickListener = listener;
     }
 
