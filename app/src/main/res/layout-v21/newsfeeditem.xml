@@ -253,10 +253,12 @@
         android:layout_height="25dp"
         android:layout_marginStart="24dp"
         android:layout_marginLeft="24dp"
-        android:layout_marginTop="16dp"
         android:src="@drawable/heart_off"
+        android:layout_marginTop="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/contents" />
+        app:layout_constraintTop_toBottomOf="@+id/image_recyclerview"
+
+        />
 
     <TextView
         android:id="@+id/heart_count"
@@ -310,6 +312,49 @@
         app:layout_constraintBottom_toBottomOf="@+id/more"
         app:layout_constraintEnd_toStartOf="@+id/more"
         app:layout_constraintTop_toTopOf="@+id/more" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/player_layout"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/player_back"
+        app:layout_constraintEnd_toEndOf="@+id/contents"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/contents"
+        app:layout_constraintTop_toBottomOf="@+id/contents">
+
+        <ImageView
+            android:id="@+id/player_control"
+            android:layout_width="30sp"
+            android:layout_height="30sp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginRight="12dp"
+            android:src="@drawable/play"
+            app:layout_constraintBottom_toBottomOf="@+id/SeekBar"
+            app:layout_constraintEnd_toStartOf="@+id/SeekBar"
+            app:layout_constraintTop_toTopOf="@+id/SeekBar" />
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:id="@+id/SeekBar"
+            android:layout_width="100sp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/image_recyclerview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/player_layout"
+        app:layout_constraintTop_toBottomOf="@+id/player_layout" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

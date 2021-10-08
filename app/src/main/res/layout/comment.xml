@@ -7,196 +7,237 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="@+id/name"
-        app:layout_constraintHorizontal_bias="0.0"
+<!--    <LinearLayout-->
+<!--        android:id="@+id/linearLayout2"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/name"-->
+<!--        app:layout_constraintHorizontal_bias="0.0"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/name"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/name">-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical"-->
+<!--            tools:layout_editor_absoluteX="97dp"-->
+<!--            tools:layout_editor_absoluteY="50dp">-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/mylang"-->
+<!--                android:layout_width="20sp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="KR"-->
+<!--                android:textSize="12sp"-->
+<!--                android:textStyle="bold" />-->
+
+<!--            <ProgressBar-->
+<!--                android:id="@+id/mylang_level"-->
+<!--                style="@style/Widget.AppCompat.ProgressBar.Horizontal"-->
+<!--                android:layout_width="20dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:max="6"-->
+<!--                android:progress="6" />-->
+<!--        </LinearLayout>-->
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/mylang2_layout"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="5dp"-->
+<!--            android:orientation="vertical"-->
+<!--            tools:layout_editor_absoluteX="97dp"-->
+<!--            tools:layout_editor_absoluteY="50dp">-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/mylang2"-->
+<!--                android:layout_width="20sp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="KR"-->
+<!--                android:textSize="12sp"-->
+<!--                android:textStyle="bold" />-->
+
+<!--            <ProgressBar-->
+<!--                android:id="@+id/mylang_level2"-->
+<!--                style="@style/Widget.AppCompat.ProgressBar.Horizontal"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:max="6"-->
+<!--                android:progress="6" />-->
+<!--        </LinearLayout>-->
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/mylang3_layout"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="5dp"-->
+<!--            android:orientation="vertical"-->
+<!--            tools:layout_editor_absoluteX="97dp"-->
+<!--            tools:layout_editor_absoluteY="50dp">-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/mylang3"-->
+<!--                android:layout_width="20sp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="KR"-->
+<!--                android:textSize="12sp"-->
+<!--                android:textStyle="bold" />-->
+
+<!--            <ProgressBar-->
+<!--                android:id="@+id/mylang_level3"-->
+<!--                style="@style/Widget.AppCompat.ProgressBar.Horizontal"-->
+<!--                android:layout_width="20dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:max="6"-->
+<!--                android:progress="6" />-->
+<!--        </LinearLayout>-->
+
+<!--    </LinearLayout>-->
+
+
+<!--    <LinearLayout-->
+<!--        android:id="@+id/linearLayout3"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+
+<!--        android:layout_marginStart="5dp"-->
+<!--        android:layout_marginLeft="5dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/linearLayout2"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/imageView"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/linearLayout2"-->
+<!--        app:layout_constraintVertical_bias="0.0">-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical"-->
+<!--            tools:layout_editor_absoluteX="97dp"-->
+<!--            tools:layout_editor_absoluteY="50dp">-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/study_lang"-->
+<!--                android:layout_width="20sp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="KR"-->
+<!--                android:textSize="12sp"-->
+<!--                android:textStyle="bold" />-->
+
+<!--            <ProgressBar-->
+<!--                android:id="@+id/studylang_level"-->
+<!--                style="@style/Widget.AppCompat.ProgressBar.Horizontal"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:max="6"-->
+<!--                android:progress="6" />-->
+<!--        </LinearLayout>-->
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/study_lang2_layout"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="5dp"-->
+<!--            android:orientation="vertical"-->
+<!--            tools:layout_editor_absoluteX="97dp"-->
+<!--            tools:layout_editor_absoluteY="50dp">-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/study_lang2"-->
+<!--                android:layout_width="20sp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="KR"-->
+<!--                android:textSize="12sp"-->
+<!--                android:textStyle="bold" />-->
+
+<!--            <ProgressBar-->
+<!--                android:id="@+id/studylang_level2"-->
+<!--                style="@style/Widget.AppCompat.ProgressBar.Horizontal"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:max="6"-->
+<!--                android:progress="6" />-->
+<!--        </LinearLayout>-->
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/study_lang3_layout"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="5dp"-->
+<!--            android:orientation="vertical"-->
+<!--            tools:layout_editor_absoluteX="97dp"-->
+<!--            tools:layout_editor_absoluteY="50dp">-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/study_lang3"-->
+<!--                android:layout_width="20sp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="KR"-->
+<!--                android:textSize="12sp"-->
+<!--                android:textStyle="bold" />-->
+
+<!--            <ProgressBar-->
+<!--                android:id="@+id/studylang_level3"-->
+<!--                style="@style/Widget.AppCompat.ProgressBar.Horizontal"-->
+<!--                android:layout_width="20dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:max="6"-->
+<!--                android:progress="6" />-->
+<!--        </LinearLayout>-->
+
+<!--    </LinearLayout>-->
+
+
+    <!--    <ImageView-->
+<!--        android:id="@+id/imageView"-->
+<!--        android:layout_width="15sp"-->
+<!--        android:layout_height="15sp"-->
+<!--        android:layout_marginStart="5dp"-->
+<!--        android:layout_marginLeft="5dp"-->
+<!--        android:layout_marginTop="12dp"-->
+<!--        android:src="@drawable/exchange"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/linearLayout2"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/linearLayout2" />-->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/player_layout"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="12dp"
+        android:visibility="gone"
+        android:background="@drawable/player_back2"
         app:layout_constraintStart_toStartOf="@+id/name"
         app:layout_constraintTop_toBottomOf="@+id/name">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/player_control"
+            android:layout_width="30sp"
+            android:layout_height="30sp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginRight="12dp"
+            android:src="@drawable/play"
+            app:layout_constraintBottom_toBottomOf="@+id/SeekBar"
+            app:layout_constraintEnd_toStartOf="@+id/SeekBar"
+            app:layout_constraintTop_toTopOf="@+id/SeekBar" />
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:id="@+id/SeekBar"
+            android:layout_width="100sp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            tools:layout_editor_absoluteX="97dp"
-            tools:layout_editor_absoluteY="50dp">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/mylang"
-                android:layout_width="20sp"
-                android:layout_height="wrap_content"
-                android:text="KR"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <ProgressBar
-                android:id="@+id/mylang_level"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="20dp"
-                android:layout_height="wrap_content"
-                android:max="6"
-                android:progress="6" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/mylang2_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:orientation="vertical"
-            tools:layout_editor_absoluteX="97dp"
-            tools:layout_editor_absoluteY="50dp">
-
-            <TextView
-                android:id="@+id/mylang2"
-                android:layout_width="20sp"
-                android:layout_height="wrap_content"
-                android:text="KR"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <ProgressBar
-                android:id="@+id/mylang_level2"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:max="6"
-                android:progress="6" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/mylang3_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:orientation="vertical"
-            tools:layout_editor_absoluteX="97dp"
-            tools:layout_editor_absoluteY="50dp">
-
-            <TextView
-                android:id="@+id/mylang3"
-                android:layout_width="20sp"
-                android:layout_height="wrap_content"
-                android:text="KR"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <ProgressBar
-                android:id="@+id/mylang_level3"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="20dp"
-                android:layout_height="wrap_content"
-                android:max="6"
-                android:progress="6" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/linearLayout3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_marginStart="5dp"
-        android:layout_marginLeft="5dp"
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayout2"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="@+id/linearLayout2"
-        app:layout_constraintVertical_bias="0.0">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            tools:layout_editor_absoluteX="97dp"
-            tools:layout_editor_absoluteY="50dp">
-
-            <TextView
-                android:id="@+id/study_lang"
-                android:layout_width="20sp"
-                android:layout_height="wrap_content"
-                android:text="KR"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <ProgressBar
-                android:id="@+id/studylang_level"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:max="6"
-                android:progress="6" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/study_lang2_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:orientation="vertical"
-            tools:layout_editor_absoluteX="97dp"
-            tools:layout_editor_absoluteY="50dp">
-
-            <TextView
-                android:id="@+id/study_lang2"
-                android:layout_width="20sp"
-                android:layout_height="wrap_content"
-                android:text="KR"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <ProgressBar
-                android:id="@+id/studylang_level2"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:max="6"
-                android:progress="6" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/study_lang3_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:orientation="vertical"
-            tools:layout_editor_absoluteX="97dp"
-            tools:layout_editor_absoluteY="50dp">
-
-            <TextView
-                android:id="@+id/study_lang3"
-                android:layout_width="20sp"
-                android:layout_height="wrap_content"
-                android:text="KR"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <ProgressBar
-                android:id="@+id/studylang_level3"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="20dp"
-                android:layout_height="wrap_content"
-                android:max="6"
-                android:progress="6" />
-        </LinearLayout>
-
-    </LinearLayout>
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile"
-        android:layout_width="50sp"
-        android:layout_height="50sp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_gravity="center"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:src="@drawable/no_porifile"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.077"
+        app:layout_constraintHorizontal_bias="0.043"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <TextView
         android:id="@+id/name"
@@ -205,25 +246,15 @@
         android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
         android:text="name"
-        android:textSize="17sp"
+        android:textColor="#979797"
+        android:textSize="15dp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/profile"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.003"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/profile"
-        app:layout_constraintTop_toTopOf="@+id/profile" />
-
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="15sp"
-        android:layout_height="15sp"
-        android:layout_marginStart="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="12dp"
-        android:src="@drawable/exchange"
-        app:layout_constraintStart_toEndOf="@+id/linearLayout2"
-        app:layout_constraintTop_toTopOf="@+id/linearLayout2" />
-
+        app:layout_constraintTop_toTopOf="@+id/profile"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/more"
@@ -238,15 +269,16 @@
         app:layout_constraintVertical_bias="0.4" />
 
     <TextView
-        android:textSize="20sp"
         android:id="@+id/contents"
-        android:layout_width="370dp"
+        android:layout_width="247dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.682"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile" />
+        android:layout_marginTop="8dp"
+        android:textColor="@color/black"
+        android:textSize="15dp"
+        app:layout_constraintEnd_toStartOf="@+id/date"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/name"
+        app:layout_constraintTop_toBottomOf="@+id/player_layout" />
 
     <View
         android:id="@+id/view3"
@@ -267,8 +299,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginRight="20dp"
-        android:textSize="15dp"
-
+        android:textSize="13dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.887"
         app:layout_constraintStart_toStartOf="parent"

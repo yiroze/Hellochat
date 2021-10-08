@@ -2,16 +2,20 @@ package com.example.hellochat.Adapter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -20,7 +24,9 @@ import com.example.hellochat.R;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -30,6 +36,7 @@ public class MyPageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final int TYPE_CONTENTS = 1;
     private ArrayList<MypageData> mData;
     private static final String TAG = "MyPageAdapter";
+    MediaPlayer mPlayer;
 
 
     public MyPageAdapter(ArrayList<MypageData> Data){
@@ -113,6 +120,8 @@ public class MyPageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         .load(imageUrl)
                         .into(myPageViewHolder.profile);
             }
+            myPageViewHolder.follower_cnt.setText(Integer.toString(mData.get(position).follower));
+            myPageViewHolder.following_cnt.setText(Integer.toString(mData.get(position).following));
 
         }else if(holder instanceof ContentsViewHolder){
             ContentsViewHolder contentsViewHolder = (ContentsViewHolder) holder;
@@ -156,13 +165,30 @@ public class MyPageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             contentsViewHolder.name.setText(mData.get(position).name);
             contentsViewHolder.contents.setText(mData.get(position).contents);
             contentsViewHolder.date.setText(mData.get(position).date);
-
+            String a = mData.get(position).image.replace("[", "").replace("]", "").replace(" ", "");
+            String[] item = a.split(",");
+            ArrayList<String> image_item = new ArrayList<>(Arrays.asList(item));
+            if (mData.get(position).image.equals("") || mData.get(position).image.equals("[]")) {
+                contentsViewHolder.image.setVisibility(View.GONE);
+            } else {
+                if(image_item.size() ==1){
+                    contentsViewHolder.image.setAdapter(new BigImageAdapter(image_item, c));
+                    contentsViewHolder.image.setLayoutManager(new GridLayoutManager(c, 1));
+                    contentsViewHolder.image.setHasFixedSize(false);
+                }else {
+                    contentsViewHolder.image.setAdapter(new ImageAdapter(image_item, c));
+                    contentsViewHolder.image.setLayoutManager(new GridLayoutManager(c, 3));
+                    contentsViewHolder.image.setHasFixedSize(true);
+                }
+            }
             if (mData.get(position).islike == 0) {
                 contentsViewHolder.heart.setImageResource(R.drawable.heart_off);
             } else {
                 contentsViewHolder.heart.setImageResource(R.drawable.heart_on);
             }
-
+            if (mData.get(position).record.equals("") || mData.get(position).record == null) {
+                contentsViewHolder.player.setVisibility(View.GONE);
+            }
             if (mData.get(position).profile != null && !mData.get(position).profile.equals("")) {
                 //이미지를 넣어주기 위해 이미지url을 가져온다.
                 String imageUrl = "http://3.37.204.197/hellochat/" + mData.get(position).profile;
@@ -181,8 +207,8 @@ public class MyPageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public class MyPageViewHolder extends RecyclerView.ViewHolder {
         ConstraintLayout update_myinfo_bnt;
-        TextView name, mylang, mylang2, mylang3, studylang, studylang2, studylang3, introduce ,feed_cnt ,like_cnt;
-        LinearLayout layout_mylang2, layout_mylang3, layout_studylang2, layout_studylang3;
+        TextView name, mylang, mylang2, mylang3, studylang, studylang2, studylang3, introduce ,feed_cnt ,like_cnt , follower_cnt , following_cnt;
+        LinearLayout layout_mylang2, layout_mylang3, layout_studylang2, layout_studylang3 , follower , following;
         ProgressBar progress_mylang, progress_mylang2, progress_mylang3, progress_studylang, progress_studylang2, progress_studylang3;
         ImageView profile;
 
@@ -210,6 +236,10 @@ public class MyPageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             this.profile = itemView.findViewById(R.id.profile);
             this.feed_cnt = itemView.findViewById(R.id.feed_cnt);
             this.like_cnt = itemView.findViewById(R.id.like_cnt);
+            this.follower_cnt = itemView.findViewById(R.id.follower_cnt);
+            this.following_cnt = itemView.findViewById(R.id.following_cnt);
+            this.follower = itemView.findViewById(R.id.follower);
+            this.following = itemView.findViewById(R.id.following);
 
             update_myinfo_bnt.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -229,7 +259,10 @@ public class MyPageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         TextView name, mylang, mylang2, mylang3, studylang, studylang2, studylang3, date, contents ,heart_count, comment_count;
         LinearLayout layout_mylang2, layout_mylang3, layout_studylang2, layout_studylang3;
         ProgressBar progress_mylang, progress_mylang2, progress_mylang3, progress_studylang, progress_studylang2, progress_studylang3;
-        ImageView profile, more ,heart;
+        ImageView profile, more ,heart, player_control;
+        protected ConstraintLayout player;
+        protected SeekBar seekBar;
+        protected RecyclerView image;
 
         public ContentsViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -257,6 +290,11 @@ public class MyPageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             this.heart = itemView.findViewById(R.id.heart);
             this.heart_count = itemView.findViewById(R.id.heart_count);
             this.comment_count = itemView.findViewById(R.id.comment_count);
+            this.player = itemView.findViewById(R.id.player_layout);
+            this.player_control = itemView.findViewById(R.id.player_control);
+            this.seekBar = itemView.findViewById(R.id.SeekBar);
+            this.image = itemView.findViewById(R.id.image_recyclerview);
+
             heart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -290,7 +328,54 @@ public class MyPageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     }
                 }
             });
+            player_control.setOnClickListener(v -> {
+                int pos = getAdapterPosition();
+                try {
+                    if (mPlayer != null) {    // 사용하기 전에
+                        mPlayer.release();  // 리소스 해제
+                        mPlayer = null;
+                        Log.d(TAG, "onCreate: 리소스해제");
+                    }
+                    mPlayer = new MediaPlayer();
+                    mPlayer.setDataSource("http://3.37.204.197/hellochat/"+mData.get(pos).record); // 음악 파일 위치 지정
+                    mPlayer.prepare();  // 미리 준비
+                    mPlayer.start();    // 재생
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                seekBar.setMax(mPlayer.getDuration());  // 음악의 총 길이를 시크바 최대값에 적용
+                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        if (fromUser)  // 사용자가 시크바를 움직이면
+                            mPlayer.seekTo(progress);   // 재생위치를 바꿔준다(움직인 곳에서의 음악재생)
+                    }
 
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                    }
+                });
+                mPlayer.start();
+                new Thread(new Runnable() {  // 쓰레드 생성
+                    @Override
+                    public void run() {
+                        while (mPlayer.isPlaying()) {  // 음악이 실행중일때 계속 돌아가게 함
+                            try {
+                                Thread.sleep(500); // 1초마다 시크바 움직이게 함
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            // 현재 재생중인 위치를 가져와 시크바에 적용
+                            seekBar.setProgress(mPlayer.getCurrentPosition());
+                        }
+                    }
+                }).start();
+
+            });
         }
     }
 

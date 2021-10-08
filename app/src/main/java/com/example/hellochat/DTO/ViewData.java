@@ -1,6 +1,10 @@
 package com.example.hellochat.DTO;
 
+import android.net.Uri;
+
 import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
 
 public class
 ViewData {
@@ -61,12 +65,18 @@ ViewData {
     @SerializedName("islike")
     public int islike;
 
+    @SerializedName("image")
+    public String image;
+
+    @SerializedName("record")
+    public String record;
+
 
     @Override
     public String toString() {
         return "ViewData{" +
-                "feed_idx='" + feed_idx + '\'' +
-                ", user_idx='" + user_idx + '\'' +
+                "feed_idx=" + feed_idx +
+                ", user_idx=" + user_idx +
                 ", name='" + name + '\'' +
                 ", profile='" + profile + '\'' +
                 ", mylang='" + mylang + '\'' +
@@ -80,17 +90,12 @@ ViewData {
                 ", studylang_level=" + studylang_level +
                 ", studylang_level2=" + studylang_level2 +
                 ", studylang_level3=" + studylang_level3 +
-                ", like_cnt=" + like_cnt +
-                ", comment_cnt=" + comment_cnt +
+                ", like_cnt='" + like_cnt + '\'' +
+                ", comment_cnt='" + comment_cnt + '\'' +
                 ", islike=" + islike +
+                ", image='" + image + '\'' +
+                ", record='" + record + '\'' +
                 '}';
     }
 
-    public void setLike_cnt(String like_cnt) {
-        this.like_cnt = like_cnt;
-    }
-
-    public void setIslike(int islike) {
-        this.islike = islike;
-    }
 }

@@ -4,14 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.Activity_Detail"
-    >
+    tools:context=".Activity.Activity_Detail">
 
     <LinearLayout
-        android:layout_alignParentTop="true"
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:layout_alignParentTop="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -26,11 +25,11 @@
     </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
-        android:layout_below="@+id/linearLayout"
-        android:layout_above="@+id/linearLayout7"
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/scroll_view">
+        android:layout_above="@+id/linearLayout7"
+        android:layout_below="@+id/linearLayout">
 
         <LinearLayout
             android:id="@+id/linearLayout8"
@@ -64,78 +63,161 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/edittext_backgroud2"
+        android:background="@drawable/comment_box"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+    >
 
         <RelativeLayout
-            android:visibility="gone"
             android:id="@+id/relativelayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            >
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/parent"
-                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
 
                 />
 
             <TextView
                 android:id="@+id/writer"
-                android:textStyle="bold"
-                android:textSize="15dp"
-                android:layout_marginLeft="20sp"
-                android:layout_marginTop="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true" />
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20sp"
+                android:layout_marginTop="5dp"
+                android:textSize="15dp"
+                android:textStyle="bold" />
 
             <ImageView
-                android:layout_marginRight="15dp"
-                android:src="@drawable/cancel"
                 android:id="@+id/cancel"
                 android:layout_width="35dp"
                 android:layout_height="30sp"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true" />
-
-
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="15dp"
+                android:src="@drawable/cancel" />
         </RelativeLayout>
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="10">
-
+            android:layout_height="50dp">
             <EditText
-                android:hint="댓글달기"
-                android:layout_marginLeft="10dp"
                 android:id="@+id/comment_edit"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="8"
-                android:windowSoftInputMode="adjustPan" />
+                android:layout_width="320dp"
+                android:layout_height="40dp"
+                android:background="@drawable/edittext_backgroud2"
+                android:hint="댓글달기"
+                android:paddingLeft="12dp"
+                android:textSize="17dp"
+                android:layout_marginLeft="10dp"
+                android:windowSoftInputMode="adjustPan"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
 
-            <Button
-                android:layout_gravity="bottom"
-                android:textColor="#0048FF"
-                android:id="@+id/submit"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
+            <ImageView
+                android:id="@+id/record"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+                android:src="@drawable/mic"
                 android:text="전송"
-                app:backgroundTint="#00FFFFFF" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/submit"
+                app:layout_constraintStart_toEndOf="@+id/comment_edit"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        </LinearLayout>
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/record_ok"
+                android:layout_width="20sp"
+                android:layout_height="20sp"
+                android:src="@drawable/ok"
+                app:layout_constraintBottom_toBottomOf="@+id/record"
+                app:layout_constraintEnd_toEndOf="@+id/record" />
+
+
+            <ImageView
+                android:id="@+id/submit"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+                android:src="@drawable/sendmessage"
+                android:text="전송"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginRight="5dp"
+                />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/voice_layout"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            >
+
+            <!--            <Button-->
+<!--                android:id="@+id/save"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="32dp"-->
+<!--                android:layout_marginLeft="32dp"-->
+<!--                android:text="저장"-->
+<!--                app:layout_constraintBottom_toBottomOf="@+id/recording"-->
+<!--                app:layout_constraintStart_toEndOf="@+id/recording"-->
+<!--                app:layout_constraintTop_toTopOf="@+id/recording" />-->
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:text="0:00"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/recording"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:background="@drawable/record_back"
+                android:src="@drawable/record"
+                android:text="녹음 시작"
+                app:layout_constraintBottom_toBottomOf="@+id/reset"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.645"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/reset"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <ImageView
+                android:id="@+id/reset"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="236dp"
+                android:layout_marginRight="236dp"
+                android:src="@drawable/garbage"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.64" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
-
 
 
 </RelativeLayout>

@@ -15,6 +15,7 @@ import com.example.hellochat.Fragment.Fragment_chat;
 import com.example.hellochat.Fragment.Fragment_mypage;
 import com.example.hellochat.Fragment.Fragment_newsfeed;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.Objects;
 

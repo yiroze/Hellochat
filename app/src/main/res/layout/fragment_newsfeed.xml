@@ -1,79 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Fragment.Fragment_chat"
     android:orientation="vertical"
-    tools:context=".Fragment.Fragment_newsfeed">
+    >
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:weightSum="10">
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="7.5"/>
-
-        <ImageView
-            android:id="@+id/alram"
-            android:src="@drawable/bell"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:layout_weight="1"
-            />
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"/>
-        <ImageView
-            android:id="@+id/edit"
-            android:src="@drawable/edit"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:layout_weight="1"
-            />
-
-    </LinearLayout>
-
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/swipe"
         >
-        <androidx.core.widget.NestedScrollView
+
+        <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/scroll_view"
+            android:layout_height="40dp"
+            android:background="#FFFFFF"
+            app:layout_scrollFlags="scroll|enterAlways"
             >
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                >
+                android:layout_height="40dp"
+                android:weightSum="10">
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="7.5"
+                    android:background="@color/white"
+                    />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_feed"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                </androidx.recyclerview.widget.RecyclerView>
-
-                <ProgressBar
-                    android:id="@+id/progress_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                <ImageView
+                    android:id="@+id/alram"
+                    android:src="@drawable/bell"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:layout_weight="1"
+                    />
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:background="@color/white"
+                    />
+                <ImageView
+                    android:id="@+id/edit"
+                    android:src="@drawable/edit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:layout_weight="1"
+                    />
 
             </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
+        </androidx.appcompat.widget.Toolbar>
 
 
 
+        <com.google.android.material.tabs.TabLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tablayout"
+            app:tabSelectedTextColor="#0000ff"
+            app:tabTextColor="#AAAAAA">
+            <!--            app:tabMode="scrollable"-->
 
-</LinearLayout>
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tab_Item1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tab1" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tab_Item2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tab2" />
+
+        </com.google.android.material.tabs.TabLayout>
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <androidx.viewpager.widget.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:id="@+id/viewpager"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

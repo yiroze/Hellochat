@@ -1,63 +1,101 @@
 package com.example.hellochat.Activity;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.hellochat.Adapter.DetailAdapter;
+import com.example.hellochat.Adapter.NewsfeedAdapter;
 import com.example.hellochat.DTO.DetailData;
 import com.example.hellochat.DTO.DetailResult;
+import com.example.hellochat.DTO.EditData;
 import com.example.hellochat.NewsfeedApi;
 import com.example.hellochat.R;
 import com.example.hellochat.DTO.ResultData;
 import com.example.hellochat.RetrofitClientInstance;
+import com.example.hellochat.SoftKeyboardDectectorView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Activity_Detail extends AppCompatActivity {
+    //리사이클러뷰
     DetailAdapter mAdapter;
     DetailResult datalist;
     RecyclerView mRecyclerView;
     List<DetailData> datainfo;
     NestedScrollView nestedScrollView;
     ProgressBar progressBar;
+
+    //입력관련
     EditText editText;
-    Button submit;
-    ImageView cancel;
+    ImageView cancel , submit;
     TextView writer, parent;
     RelativeLayout relativelayout;
-    int page = 1, limit = 5;
+    int page = 1, limit = 10;
     int feed , user;
     int feednum;
     private static final String TAG = "Activity_Detail";
+
+    //녹음기 , 플레이어
+    MediaRecorder recorder;
+    MediaPlayer mPlayer;
+    boolean isRecording, isPlaying, RecordState , RecordDataState  =false ;
+    ConstraintLayout voice_layout;
+    String RecordDataPath;
+    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200, MESSAGE_RECORD_TIMER = 100, MESSAGE_RECORD_START = 103, MESSAGE_PLAYER_TIMER = 101, MESSAGE_PLAYER_START = 102;
+    TextView time;
+    TimerHandler timerHandler;
+    ImageView record_bnt , mic , record_ok , reset ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,13 +103,18 @@ public class Activity_Detail extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
+        initView();
+        setKeyboard();
+        timerHandler = new TimerHandler();
         Intent intent = getIntent();
         feednum = intent.getIntExtra("feed_idx", 0);
         SharedPreferences pref = getSharedPreferences("LOGIN", MODE_PRIVATE);
         String user = pref.getString("Login_data", "");
         int user_idx = Integer.parseInt(user);
         datainfo = new ArrayList<>();
-        final InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+
+        InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+
         mAdapter = new DetailAdapter(datainfo);
         mRecyclerView = (RecyclerView) findViewById(R.id.comment_recycler);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(Activity_Detail.this);
@@ -82,28 +125,35 @@ public class Activity_Detail extends AppCompatActivity {
 
         getDetail(feednum, user_idx, page, limit);
 
-        submit = (Button) findViewById(R.id.submit);
-        editText = (EditText) findViewById(R.id.comment_edit);
-        writer = (TextView) findViewById(R.id.writer);
-        parent = (TextView) findViewById(R.id.parent);
-        relativelayout = (RelativeLayout) findViewById(R.id.relativelayout);
-        cancel = (ImageView) findViewById(R.id.cancel);
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        nestedScrollView = (NestedScrollView) findViewById(R.id.scroll_view);
-
-
         submit.setOnClickListener(v -> {
-            if (!editText.getText().toString().equals("")) {
-                if (parent.getText().toString().equals("")) {
-                    setComment(feednum, user_idx, editText.getText().toString(), 0, page, limit);
-                    editText.setText("");
-                } else {
-                    setComment(feednum, user_idx, editText.getText().toString(), Integer.parseInt(parent.getText().toString()), page, limit);
-                    editText.setText("");
-                    parent.setText("");
-                    relativelayout.setVisibility(View.GONE);
+            if (!editText.getText().toString().equals("") || RecordDataState) {
+                if(RecordDataState){
+                    upload_Record();
+                }else {
+                    RecordDataPath = "";
                 }
+                Handler mHandler = new Handler();
+                mHandler.postDelayed(new Runnable() {
+                    public void run() {
+                        if (parent.getText().toString().equals("")) {
+                            setComment(feednum, user_idx, editText.getText().toString(), 0, page, limit , RecordDataPath);
+                            editText.setText("");
+                        } else {
+                            setComment(feednum, user_idx, editText.getText().toString(), Integer.parseInt(parent.getText().toString()), page, limit ,RecordDataPath);
+                            editText.setText("");
+                            parent.setText("");
+                            relativelayout.setVisibility(View.GONE);
+                        }
+                    }
+                }, 250); //1 초후
                 manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                voice_layout.setVisibility(View.GONE);
+                isPlaying = false;
+                RecordState = false;
+                RecordDataState = false;
+                time.setText("0:00");
+                record_bnt.setImageResource(R.drawable.record);
+                record_ok.setVisibility(View.GONE);
             }
 
         });
@@ -125,6 +175,89 @@ public class Activity_Detail extends AppCompatActivity {
             }
         });
 
+        mic.setOnClickListener(v -> {
+            PermissionCheck();
+            try {
+                manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            voice_layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 500));
+            voice_layout.setVisibility(View.VISIBLE);
+        });
+        reset.setOnClickListener(v -> {
+            isPlaying = false;
+            if(isRecording){
+                stopRecording();
+                isRecording = false;
+            }
+            RecordState = false;
+            RecordDataState = false;
+            time.setText("0:00");
+            timerHandler.removeMessages(MESSAGE_RECORD_TIMER);
+            record_bnt.setImageResource(R.drawable.record);
+            record_ok.setVisibility(View.GONE);
+            recorder = null;
+        });
+
+
+        record_bnt.setOnClickListener(v -> {
+            if (recorder == null) {
+                recorder = new MediaRecorder(); // 미디어리코더 객체 생성
+                Log.d(TAG, "onCreate: 미디어객체생성");
+            }
+            if (!RecordState) {
+                if (!isRecording) {
+                    isRecording = true;
+                    record_bnt.setImageResource(R.drawable.record_stop);
+                    recordAudio();
+                    timerHandler.sendEmptyMessage(MESSAGE_RECORD_START);
+                    Log.d(TAG, "onCreate: 녹화 시작");
+                } else {
+                    stopRecording();
+                    isRecording = false;
+                    record_bnt.setImageResource(R.drawable.play);
+                    RecordState = true;
+                    RecordDataState = true;
+                    timerHandler.removeMessages(MESSAGE_RECORD_TIMER);
+                    Log.d(TAG, "onCreate: 녹화 중지");
+                    copyFile(getFilePath(), SaveRecordData());
+                    record_ok.setVisibility(View.VISIBLE);
+                }
+            } else {
+                if (!isPlaying) {
+                    try {
+                        if (mPlayer != null) {    // 사용하기 전에
+                            mPlayer.release();  // 리소스 해제
+                            mPlayer = null;
+                            Log.d(TAG, "onCreate: 리소스해제");
+                        }
+                        mPlayer = new MediaPlayer();
+                        mPlayer.setDataSource(getFilePath()); // 음악 파일 위치 지정
+                        mPlayer.prepare();  // 미리 준비
+                        mPlayer.start();    // 재생
+                        timerHandler.sendEmptyMessage(MESSAGE_PLAYER_START);
+                        Log.d(TAG, "onCreate: 재생시작");
+                        Toast.makeText(getApplicationContext(), "재생시작", Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    isPlaying = true;
+                    record_bnt.setImageResource(R.drawable.pause);
+                } else {
+                    if (mPlayer != null) {
+                        mPlayer.pause();    // 일시정지
+                        Toast.makeText(getApplicationContext(), "일시정지", Toast.LENGTH_SHORT).show();
+                        isPlaying = false;
+                        record_bnt.setImageResource(R.drawable.play);
+                        timerHandler.removeMessages(MESSAGE_PLAYER_TIMER);
+                        Log.d(TAG, "onCreate: 일시정지");
+                    }
+                }
+            }
+
+        });
+
 
     }
 
@@ -143,8 +276,6 @@ public class Activity_Detail extends AppCompatActivity {
             }
             getDetail(feed,user,page,limit);
         }
-
-
     }
 
     public void getDetail(int feed_idx, int user_idx, int page, int limit) {
@@ -176,9 +307,9 @@ public class Activity_Detail extends AppCompatActivity {
         });
     }
 
-    public void setComment(int feed_idx, int user_idx, String comment, int parent, int page, int limit) {
+    public void setComment(int feed_idx, int user_idx, String comment, int parent, int page, int limit , String recordDataPath) {
         NewsfeedApi service = RetrofitClientInstance.getRetrofitInstance().create(NewsfeedApi.class);
-        Call<ResultData> call = service.set_comment(feed_idx, user_idx, comment, parent);
+        Call<ResultData> call = service.set_comment(feed_idx, user_idx, comment, parent , recordDataPath);
         call.enqueue(new Callback<ResultData>() {
             @Override
             public void onResponse(Call<ResultData> call, Response<ResultData> response) {
@@ -186,7 +317,6 @@ public class Activity_Detail extends AppCompatActivity {
                     getDetail(feed_idx, user_idx, page, limit);
                 }
             }
-
             @Override
             public void onFailure(Call<ResultData> call, Throwable t) {
             }
@@ -329,6 +459,45 @@ public class Activity_Detail extends AppCompatActivity {
         alertDialog.show();
     }
 
+    public void Delete(int feed_idx) {
+        AlertDialog.Builder dia = new AlertDialog.Builder(Activity_Detail.this);
+        dia.setTitle("삭제하시겠습니까?");
+        dia.setPositiveButton("네", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                NewsfeedApi service = RetrofitClientInstance.getRetrofitInstance().create(NewsfeedApi.class);
+                Call<ResultData> call = service.delete_post(feed_idx);
+                call.enqueue(new Callback<ResultData>() {
+                    @Override
+                    public void onResponse(Call<ResultData> call, Response<ResultData> response) {
+                        //메시지 받기
+                        //alert띄우고 리사이클러뷰 새로고침
+                        if (response.isSuccessful()) {
+                            ResultData resultData = response.body();
+                            Log.d(TAG, "onResponse: " + resultData.body);
+                            if (resultData.body.equals("ok")) {
+                                Log.d(TAG, "onResponse: ");
+                                finish();
+                            } else {
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResultData> call, Throwable t) {
+                    }
+                });
+            }
+        });
+        dia.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        AlertDialog alertDialog = dia.create();
+        alertDialog.show();
+    }
+
     public void setClick(DetailAdapter mAdapter ,int feed_idx, int user_idx, int page, int limit ){
         mAdapter.setOnCommentClickListener(new DetailAdapter.OnCommentClickListener() {
             @Override
@@ -416,45 +585,230 @@ public class Activity_Detail extends AppCompatActivity {
                 alertDialog.show();
             }
         });
+        mAdapter.setOpenUserDetail(new DetailAdapter.OpenUserDetail() {
+            @Override
+            public void openUserDetail(View v, int position) {
+                Intent intent = new Intent(Activity_Detail.this , Activity_UserDetail.class);
+                intent.putExtra("user_idx" , datainfo.get(position).user_idx);
+                startActivity(intent);
+            }
+        });
+        mAdapter.setOpenMyDetail(new NewsfeedAdapter.OpenMyDetail() {
+            @Override
+            public void openMyDetail(View v, int position) {
+                Intent intent = new Intent(Activity_Detail.this , Activity_UserDetail.class);
+                intent.putExtra("user_idx" , datainfo.get(position).user_idx);
+                startActivity(intent);
+            }
+        });
 
     }
 
-    public void Delete(int feed_idx) {
-        AlertDialog.Builder dia = new AlertDialog.Builder(Activity_Detail.this);
-        dia.setTitle("삭제하시겠습니까?");
-        dia.setPositiveButton("네", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                NewsfeedApi service = RetrofitClientInstance.getRetrofitInstance().create(NewsfeedApi.class);
-                Call<ResultData> call = service.delete_post(feed_idx);
-                call.enqueue(new Callback<ResultData>() {
-                    @Override
-                    public void onResponse(Call<ResultData> call, Response<ResultData> response) {
-                        //메시지 받기
-                        //alert띄우고 리사이클러뷰 새로고침
-                        if (response.isSuccessful()) {
-                            ResultData resultData = response.body();
-                            Log.d(TAG, "onResponse: " + resultData.body);
-                            if (resultData.body.equals("ok")) {
-                                Log.d(TAG, "onResponse: ");
-                                finish();
-                            } else {
-                            }
-                        }
-                    }
+    public void setKeyboard(){
+        final SoftKeyboardDectectorView softKeyboardDecector = new SoftKeyboardDectectorView(this);
+        addContentView(softKeyboardDecector, new FrameLayout.LayoutParams(-1, -1));
 
-                    @Override
-                    public void onFailure(Call<ResultData> call, Throwable t) {
-                    }
-                });
-            }
-        });
-        dia.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+        softKeyboardDecector.setOnShownKeyboard(new SoftKeyboardDectectorView.OnShownKeyboardListener() {
+
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onShowSoftKeyboard() {
+                //키보드 등장할 때
+                voice_layout.setVisibility(View.GONE);
+                voice_layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0));
             }
         });
-        AlertDialog alertDialog = dia.create();
-        alertDialog.show();
+
+        softKeyboardDecector.setOnHiddenKeyboard(new SoftKeyboardDectectorView.OnHiddenKeyboardListener() {
+
+            @Override
+            public void onHiddenSoftKeyboard() {
+                // 키보드 사라질 때
+            }
+        });
+    }
+
+    public void initView(){
+        submit = (ImageView) findViewById(R.id.submit);
+        editText = (EditText) findViewById(R.id.comment_edit);
+        writer = (TextView) findViewById(R.id.writer);
+        parent = (TextView) findViewById(R.id.parent);
+        relativelayout = (RelativeLayout) findViewById(R.id.relativelayout);
+        cancel = (ImageView) findViewById(R.id.cancel);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        nestedScrollView = (NestedScrollView) findViewById(R.id.scroll_view);
+        time = (TextView) findViewById(R.id.time);
+        voice_layout = (ConstraintLayout) findViewById(R.id.voice_layout);
+        reset = (ImageView) findViewById(R.id.reset);
+        record_bnt = (ImageView) findViewById(R.id.recording);
+        mic = (ImageView)findViewById(R.id.record);
+        record_ok= (ImageView)findViewById(R.id.record_ok);
+    }
+
+    private void PermissionCheck() {
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
+
+        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "오디오 권한 있음", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "오디오 권한 없음", Toast.LENGTH_LONG).show();
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.RECORD_AUDIO)) {
+                //오디오 권한 설명이 필요함
+                Toast.makeText(this, "오디오 권한 설명이 필요함", Toast.LENGTH_LONG).show();
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_RECORD_AUDIO_PERMISSION);
+            }
+        }
+    }
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+    private String getFilePath() {
+        ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
+        File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+        File file = new File(musicDirectory, "recorded.mp4");
+        return file.getPath();
+    }
+
+    private String SaveRecordData() {
+        ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
+        File musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
+        File file = new File(musicDirectory, "upload.mp4");
+        return file.getPath();
+    }
+
+    private boolean copyFile(String strSrc, String save_file) {
+        File file = new File(strSrc);
+
+        boolean result;
+        if (file != null && file.exists()) {
+
+            try {
+
+                FileInputStream fis = new FileInputStream(file);
+                FileOutputStream newfos = new FileOutputStream(save_file);
+                int readcount = 0;
+                byte[] buffer = new byte[1024];
+
+                while ((readcount = fis.read(buffer, 0, 1024)) != -1) {
+                    newfos.write(buffer, 0, readcount);
+                }
+                newfos.close();
+                fis.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            result = true;
+        } else {
+            result = false;
+        }
+        return result;
+    }
+
+    //녹음 시작
+    public void recordAudio() {
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);//입력될 장치
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);//저장될 포맷
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);//인코더설정 디폴트
+        recorder.setOutputFile(getFilePath());//저장위치 설정
+        Log.d(TAG, "onCreate: " + getFilePath());
+        try {
+            recorder.prepare();
+            recorder.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //녹음 중지
+    public void stopRecording() {
+        if (recorder != null) {
+            recorder.stop();
+            recorder.release();
+            recorder = null;
+        }
+    }
+
+    public class TimerHandler extends Handler {
+        int S = 0;
+        int M = 0;
+        int S2 = 0;
+        int M2 = 0;
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case MESSAGE_RECORD_TIMER:
+                    removeMessages(MESSAGE_RECORD_TIMER);
+                    S += 1;
+                    if (S == 60) {
+                        M += 1;
+                        S = 0;
+                    }
+                    time.setText(M + ":" + String.format("%02d", S));
+                    this.sendEmptyMessageDelayed(MESSAGE_RECORD_TIMER, 1000);
+                    Log.d(TAG, "handleMessage: 1");
+                    break;
+
+                case MESSAGE_RECORD_START:
+                    S = 0;
+                    M = 0;
+                    time.setText(M + ":" + String.format("%02d", S));
+                    Log.d(TAG, "handleMessage: 4" + S + "" + M);
+                    this.sendEmptyMessageDelayed(MESSAGE_RECORD_TIMER, 1000);
+                    break;
+
+                case MESSAGE_PLAYER_TIMER:
+                    removeMessages(MESSAGE_RECORD_TIMER);
+                    S2 -= 1;
+                    if (S2 == 0) {
+                        if (M2 == 0) {
+                            time.setText(M2 + ":" + String.format("%02d", S2));
+                            isPlaying = false;
+                            record_bnt.setImageResource(R.drawable.play);
+                            break;
+                        }
+                        M2 -= 1;
+                        S2 = 0;
+                    }
+                    time.setText(M2 + ":" + String.format("%02d", S2));
+                    this.sendEmptyMessageDelayed(MESSAGE_PLAYER_TIMER, 1000);
+                    Log.d(TAG, "handleMessage: 2");
+
+                    break;
+                case MESSAGE_PLAYER_START:
+                    removeMessages(MESSAGE_PLAYER_TIMER);
+                    S2 = S;
+                    M2 = M;
+                    time.setText(M2 + ":" + String.format("%02d", S2));
+                    Log.d(TAG, "handleMessage: 3");
+                    this.sendEmptyMessageDelayed(MESSAGE_PLAYER_TIMER, 1000);
+                    break;
+            }
+        }
+    }
+
+    public void upload_Record() {
+        File file = new File(SaveRecordData());
+        long time = System.currentTimeMillis();
+        NewsfeedApi service = RetrofitClientInstance.getRetrofitInstance().create(NewsfeedApi.class);
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("uploaded_file", user + time + file.getName(), requestFile);
+        Call<ResultData> call = service.upload_Record(body);
+        call.enqueue(new Callback<ResultData>() {
+            @Override
+            public void onResponse(Call<ResultData> call, Response<ResultData> response) {
+                ResultData resultData = response.body();
+                RecordDataPath = resultData.body;
+                Log.d(TAG, "onResponse: " + RecordDataPath);
+                Log.d(TAG, "onResponse: " + response.body());
+            }
+            @Override
+            public void onFailure(Call<ResultData> call, Throwable t) {
+                Log.d(TAG, "onFailure: " + t.toString());
+            }
+        });
+
     }
 }

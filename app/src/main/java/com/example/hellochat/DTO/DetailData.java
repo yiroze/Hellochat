@@ -72,6 +72,12 @@ public class DetailData {
     @SerializedName("comment_cnt")
     public int comment_cnt;
 
+    @SerializedName("image")
+    public String image;
+
+    @SerializedName("record")
+    public String record;
+
     public int getView_type() {
         return view_type;
     }
@@ -79,7 +85,7 @@ public class DetailData {
     @Override
     public String toString() {
         return "DetailData{" +
-                "user_idx='" + user_idx + '\'' +
+                "user_idx=" + user_idx +
                 ", name='" + name + '\'' +
                 ", profile='" + profile + '\'' +
                 ", mylang='" + mylang + '\'' +
@@ -101,8 +107,8 @@ public class DetailData {
                 ", islike=" + islike +
                 ", like_cnt=" + like_cnt +
                 ", comment_cnt=" + comment_cnt +
+                ", image='" + image + '\'' +
+                ", record='" + record + '\'' +
                 '}';
     }
-
-
 }

@@ -5,6 +5,12 @@ import com.google.gson.annotations.SerializedName;
 public class MypageData {
 
 
+    @SerializedName("follower")
+    public int follower;
+
+    @SerializedName("following")
+    public int following;
+
     @SerializedName("feed_idx")
     public int feed_idx;
 
@@ -70,13 +76,18 @@ public class MypageData {
     public int view_type;
     //뷰타입  0 =헤더 1 =게시글
 
-    public int getView_type() {
-        return view_type;
-    }
+    @SerializedName("record")
+    public String record;
+
+    @SerializedName("image")
+    public String image;
+
     @Override
     public String toString() {
         return "MypageData{" +
-                "feed_idx=" + feed_idx +
+                "follower=" + follower +
+                ", following=" + following +
+                ", feed_idx=" + feed_idx +
                 ", user_idx=" + user_idx +
                 ", name='" + name + '\'' +
                 ", profile='" + profile + '\'' +
@@ -94,10 +105,17 @@ public class MypageData {
                 ", like_cnt='" + like_cnt + '\'' +
                 ", comment_cnt='" + comment_cnt + '\'' +
                 ", islike=" + islike +
-                ", feed_cnt=" + feed_cnt +
+                ", feed_cnt='" + feed_cnt + '\'' +
                 ", all_like_cnt=" + all_like_cnt +
                 ", view_type=" + view_type +
+                ", record='" + record + '\'' +
+                ", image='" + image + '\'' +
                 '}';
     }
+
+    public int getView_type() {
+        return view_type;
+    }
+
 
 }

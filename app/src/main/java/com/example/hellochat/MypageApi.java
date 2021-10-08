@@ -10,7 +10,6 @@ import retrofit2.http.POST;
 
 public interface MypageApi {
 
-
     @FormUrlEncoded
     @POST("mypage.php")
     Call<MypageResult> getMypage(

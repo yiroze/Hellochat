@@ -440,6 +440,7 @@ public class Activity_Join2 extends AppCompatActivity {
 
         //사진업로드 받기
         plus.setOnClickListener(v -> {
+            //갤러리 권한 받기
             tedPermission();
             Intent galleryIntent = new Intent(Intent.ACTION_PICK);
             galleryIntent.setType(MediaStore.Images.Media.CONTENT_TYPE);
@@ -483,10 +484,6 @@ public class Activity_Join2 extends AppCompatActivity {
                 cursor.moveToFirst();
 
                 tempFile = new File(cursor.getString(column_index));
-
-
-
-
             } finally {
                 if (cursor != null) {
                     cursor.close();

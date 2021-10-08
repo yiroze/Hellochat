@@ -2,9 +2,13 @@ package com.example.hellochat.Adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +16,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -28,7 +36,10 @@ import com.example.hellochat.DTO.ViewData;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,28 +49,50 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.NewsfeedViewHolder> {
     private Context c;
-    private ArrayList<ViewData> datalist =new ArrayList<>();
+    private ArrayList<ViewData> datalist = new ArrayList<>();
     int idx;
     private static final String TAG = "NewsfeedAdapter";
+    MediaPlayer mPlayer;
 
-    private OnItemClickListener mListener  ;
-    private OnMoreBntClickListener moreBntClickListener  ;
+    private OnItemClickListener mListener;
+    private OnMoreBntClickListener moreBntClickListener;
+    private OpenUserDetail openUserDetail;
+    private OpenMyDetail openMyDetail;
 
     public interface OnItemClickListener {
-        void onItemClick(View v, int position) ;
-    }
-    public interface OnMoreBntClickListener {
-        void onMoreBntClick(View v, int position) ;
-    }
-    public void setOnMoreClickListener(OnMoreBntClickListener listener) {
-        this.moreBntClickListener = listener ;
-    }
-    // OnItemClickListener 리스너 객체 참조를 어댑터에 전달하는 메서드
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.mListener = listener ;
+        void onItemClick(View v, int position);
     }
 
-    public NewsfeedAdapter(ArrayList<ViewData> datalist ) {
+    public interface OpenUserDetail {
+        void openUserDetail(View v, int position);
+    }
+
+    public interface OpenMyDetail {
+        void openMyDetail(View v, int position);
+    }
+
+    public interface OnMoreBntClickListener {
+        void onMoreBntClick(View v, int position);
+    }
+
+    public void setOnMoreClickListener(OnMoreBntClickListener listener) {
+        this.moreBntClickListener = listener;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.mListener = listener;
+    }
+
+    public void setOpenUserDetail(OpenUserDetail listener) {
+        this.openUserDetail = listener;
+    }
+
+    public void setOpenMyDetail(OpenMyDetail listener) {
+        this.openMyDetail = listener;
+    }
+
+
+    public NewsfeedAdapter(ArrayList<ViewData> datalist) {
         this.datalist = datalist;
     }
 
@@ -68,13 +101,14 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
     public NewsfeedAdapter.NewsfeedViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         c = parent.getContext();
-        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.newsfeeditem ,parent , false);
-        NewsfeedViewHolder viewHolder = new NewsfeedViewHolder(view );
+        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.newsfeeditem, parent, false);
+        NewsfeedViewHolder viewHolder = new NewsfeedViewHolder(view);
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull NewsfeedViewHolder holder, int position) {
+
         // 나의 게시글이 아닐경우 수정삭제가 없도록한다
         idx = Integer.parseInt(getPref());
         if (datalist.get(position).user_idx != idx) {
@@ -126,8 +160,6 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
         } else {
             holder.heart.setImageResource(R.drawable.heart_on);
         }
-
-
         if (datalist.get(position).profile != null && !datalist.get(position).profile.equals("")) {
             //이미지를 넣어주기 위해 이미지url을 가져온다.
             String imageUrl = "http://3.37.204.197/hellochat/" + datalist.get(position).profile;
@@ -136,20 +168,44 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
                     .load(imageUrl)
                     .into(holder.profile);
         }
-
+        String a = datalist.get(position).image.replace("[", "").replace("]", "").replace(" ", "");
+        String[] item = a.split(",");
+        ArrayList<String> image_item = new ArrayList<>(Arrays.asList(item));
+        if (datalist.get(position).image.equals("") || datalist.get(position).image.equals("[]")) {
+            holder.image.setVisibility(View.GONE);
+        } else {
+            if (image_item.size() == 1) {
+                holder.image.setAdapter(new BigImageAdapter(image_item, c));
+                holder.image.setLayoutManager(new GridLayoutManager(c, 1));
+                holder.image.setHasFixedSize(false);
+            } else {
+                holder.image.setAdapter(new ImageAdapter(image_item, c));
+                holder.image.setLayoutManager(new GridLayoutManager(c, 3));
+                holder.image.setHasFixedSize(true);
+            }
+        }
+        if (datalist.get(position).record.equals("") || datalist.get(position).record == null) {
+            holder.player.setVisibility(View.GONE);
+        }
     }
+
     @Override
     public int getItemCount() {
         return (null != datalist ? datalist.size() : 0);
     }
 
 
-    public class NewsfeedViewHolder extends RecyclerView.ViewHolder  {
+    public class NewsfeedViewHolder extends RecyclerView.ViewHolder {
 
         protected LinearLayout mylang_layout2, mylang_layout3, study_lang_layout2, study_lang_layout3;
         protected TextView name, mylang, mylang2, mylang3, study_lang, study_lang2, study_lang3, heart_count, comment_count, contents, date;
         protected ProgressBar mylang_level, study_lang_level, study_lang_level2, study_lang_level3;
-        protected ImageView heart, profile, more;
+        protected ImageView heart, profile, more, player_control;
+        protected RecyclerView image;
+        protected ConstraintLayout player;
+        protected SeekBar seekBar;
+        boolean isplaying;
+        int pauseposition;
 
         public NewsfeedViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -175,16 +231,69 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
             this.mylang_layout3 = itemView.findViewById(R.id.mylang3_layout);
             this.study_lang_layout2 = itemView.findViewById(R.id.study_lang2_layout);
             this.study_lang_layout3 = itemView.findViewById(R.id.study_lang3_layout);
+            this.image = itemView.findViewById(R.id.image_recyclerview);
+            this.player = itemView.findViewById(R.id.player_layout);
+            this.player_control = itemView.findViewById(R.id.player_control);
+            this.seekBar = itemView.findViewById(R.id.SeekBar);
 
+
+            player_control.setOnClickListener(v -> {
+                int pos = getAdapterPosition();
+                try {
+                    if (mPlayer != null) {    // 사용하기 전에
+                        mPlayer.release();  // 리소스 해제
+                        mPlayer = null;
+                        Log.d(TAG, "onCreate: 리소스해제");
+                    }
+                    mPlayer = new MediaPlayer();
+                    mPlayer.setDataSource("http://3.37.204.197/hellochat/" + datalist.get(pos).record); // 음악 파일 위치 지정
+                    mPlayer.prepare();  // 미리 준비
+                    mPlayer.start();    // 재생
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                seekBar.setMax(mPlayer.getDuration());  // 음악의 총 길이를 시크바 최대값에 적용
+                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        if (fromUser)  // 사용자가 시크바를 움직이면
+                            mPlayer.seekTo(progress);   // 재생위치를 바꿔준다(움직인 곳에서의 음악재생)
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                    }
+                });
+                mPlayer.start();
+                new Thread(new Runnable() {  // 쓰레드 생성
+                    @Override
+                    public void run() {
+                        while (mPlayer.isPlaying()) {  // 음악이 실행중일때 계속 돌아가게 함
+                            try {
+                                Thread.sleep(500); // 1초마다 시크바 움직이게 함
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            // 현재 재생중인 위치를 가져와 시크바에 적용
+                            seekBar.setProgress(mPlayer.getCurrentPosition());
+                        }
+                    }
+                }).start();
+
+            });
 
             heart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
                     Log.d(TAG, "onClick: " + mListener);
-                    if(mListener != null){
-                        mListener.onItemClick(v , pos);
-                    }else {
+                    if (mListener != null) {
+                        mListener.onItemClick(v, pos);
+                    } else {
                         Log.d(TAG, "onClick: null");
                     }
                 }
@@ -205,31 +314,47 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
                     //alert
-                    if(pos != RecyclerView.NO_POSITION){
-                        if(moreBntClickListener != null){
-                            moreBntClickListener.onMoreBntClick(v , pos);
+                    if (pos != RecyclerView.NO_POSITION) {
+                        if (moreBntClickListener != null) {
+                            moreBntClickListener.onMoreBntClick(v, pos);
                         }
                     }
-//                    String items[] = {"수정하기", "삭제하기"};
-//                    AlertDialog.Builder dia = new AlertDialog.Builder(c);
-//                    dia.setItems(items, new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            if (which == 0) {
-//                                Intent intent = new Intent(c, Activity_modify.class);
-//                                intent.putExtra("feed_idx", datalist.get(pos).feed_idx);
-//                                v.getContext().startActivity(intent);
-//                                dialog.dismiss();
-//                            } else if (which == 1) {
-//                                Delete(datalist.get(pos).feed_idx, pos);
-//                            }
-//                        }
-//                    });
-//                    AlertDialog alertDialog = dia.create();
-//                    alertDialog.show();
                 }
             });
-
+            profile.setOnClickListener(v -> {
+                int pos = getAdapterPosition();
+                if (datalist.get(pos).user_idx == Integer.parseInt(getPref())) {
+                    if(pos != RecyclerView.NO_POSITION){
+                        if(openMyDetail != null){
+                            openMyDetail.openMyDetail(v,pos);
+                        }
+                    }
+                } else {
+                    //alert
+                    if (pos != RecyclerView.NO_POSITION) {
+                        if (openUserDetail != null) {
+                            openUserDetail.openUserDetail(v, pos);
+                        }
+                    }
+                }
+            });
+            name.setOnClickListener(v -> {
+                int pos = getAdapterPosition();
+                if (datalist.get(pos).user_idx == Integer.parseInt(getPref())) {
+                    if(pos != RecyclerView.NO_POSITION){
+                        if(openMyDetail != null){
+                            openMyDetail.openMyDetail(v,pos);
+                        }
+                    }
+                } else {
+                    //alert
+                    if (pos != RecyclerView.NO_POSITION) {
+                        if (openUserDetail != null) {
+                            openUserDetail.openUserDetail(v, pos);
+                        }
+                    }
+                }
+            });
         }
 
     }
@@ -240,56 +365,9 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
     }
 
 
-
     public void clear() {
         datalist.clear();
     }
-
-
-
-    public void Delete(int feed_idx, int pos) {
-        AlertDialog.Builder dia = new AlertDialog.Builder(c);
-        dia.setTitle("삭제하시겠습니까?");
-        dia.setPositiveButton("네", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                NewsfeedApi service = RetrofitClientInstance.getRetrofitInstance().create(NewsfeedApi.class);
-                Call<ResultData> call = service.delete_post(feed_idx);
-                call.enqueue(new Callback<ResultData>() {
-                    @Override
-                    public void onResponse(Call<ResultData> call, Response<ResultData> response) {
-                        //메시지 받기
-                        //alert띄우고 리사이클러뷰 새로고침
-                        if (response.isSuccessful()) {
-                            ResultData resultData = response.body();
-                            Log.d(TAG, "onResponse: " + resultData.body);
-                            if (resultData.body.equals("ok")) {
-                                Log.d(TAG, "onResponse: ");
-                                datalist.remove(pos);
-                                notifyItemRemoved(pos);
-                                notifyDataSetChanged();
-                            } else {
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResultData> call, Throwable t) {
-                    }
-                });
-            }
-        });
-        dia.setNegativeButton("취소", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
-        AlertDialog alertDialog = dia.create();
-        alertDialog.show();
-    }
-
-
-
 
 
 }

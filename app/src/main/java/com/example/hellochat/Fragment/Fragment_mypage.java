@@ -53,8 +53,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Fragment_mypage extends Fragment {
 
-    TextView name , mylang , mylang2 , mylang3 , studylang , studylang2 , studylang3 , level, level2, level3;
-    Button logout;
     String TAG = this.getClass().getName();
     int idx;
     RecyclerView mRecyclerView;
@@ -147,6 +145,8 @@ public class Fragment_mypage extends Fragment {
                     mRecyclerView.setAdapter(mAdapter);
                     mAdapter.notifyDataSetChanged();
                     Log.d(TAG, "onResponse: " + mypageData);
+                    Log.d(TAG, "onResponse: " + result_data);
+
                     setClickListener(mAdapter, user_idx , page , limit);
                 }
             }

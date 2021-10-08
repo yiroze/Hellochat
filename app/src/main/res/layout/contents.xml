@@ -251,12 +251,12 @@
         android:id="@+id/heart"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="16dp"
         android:src="@drawable/heart_off"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/contents" />
+        app:layout_constraintTop_toBottomOf="@+id/image_recyclerview" />
 
     <TextView
         android:id="@+id/heart_count"
@@ -333,9 +333,55 @@
         app:layout_constraintTop_toBottomOf="@+id/textView5"
         tools:layout_editor_absoluteX="0dp"
         android:layout_marginTop="10dp"
-        android:background="#ECECEC"
-
+        android:background="#FFFFFF"
         />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/player_layout"
+        android:layout_width="187dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/player_back"
+        app:layout_constraintEnd_toEndOf="@+id/contents"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/contents"
+        app:layout_constraintTop_toBottomOf="@+id/contents">
+
+        <ImageView
+            android:id="@+id/player_control"
+            android:layout_width="30sp"
+            android:layout_height="30sp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/play"
+            app:layout_constraintBottom_toBottomOf="@+id/SeekBar"
+            app:layout_constraintEnd_toStartOf="@+id/SeekBar"
+            app:layout_constraintTop_toTopOf="@+id/SeekBar"
+            app:layout_constraintVertical_bias="0.636" />
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:id="@+id/SeekBar"
+            android:layout_width="126dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginRight="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.551"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/image_recyclerview"
+        android:layout_width="370dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="@+id/contents"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/contents"
+        app:layout_constraintTop_toBottomOf="@+id/player_layout" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
