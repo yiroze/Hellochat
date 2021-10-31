@@ -19,7 +19,7 @@
             android:layout_height="50sp"
             android:layout_gravity="center"
             android:layout_marginTop="24dp"
-            android:src="@drawable/no_porifile"
+            android:src="@drawable/no_profile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.171"
             app:layout_constraintStart_toStartOf="parent"
@@ -277,7 +277,7 @@
             android:id="@+id/following"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="100dp"
+            android:layout_marginLeft="150dp"
             android:orientation="vertical">
 
             <TextView

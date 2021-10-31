@@ -74,6 +74,8 @@ public class Activity_Login extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<LoginData> call, Response<LoginData> response) {
                         if (response.isSuccessful()) {
+                            Log.d(TAG, "onResponse: "+response.body().toString());
+
                             LoginData msg = response.body();
                             Log.d(TAG, "onResponse: " + msg);
                             Log.d(TAG, "onResponse: " + msg.result);

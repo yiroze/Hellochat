@@ -25,6 +25,8 @@ import android.widget.TextView;
 
 import com.example.hellochat.Activity.Activity_Detail;
 import com.example.hellochat.Activity.Activity_Edit;
+import com.example.hellochat.Activity.Activity_Follower;
+import com.example.hellochat.Activity.Activity_Following;
 import com.example.hellochat.Activity.Activity_Setting;
 import com.example.hellochat.Activity.Activity_modify;
 import com.example.hellochat.Activity.Activity_modify_comment;
@@ -198,6 +200,21 @@ public class Fragment_mypage extends Fragment {
             @Override
             public void onmyPageClick(View v, int pos) {
                 Intent intent = new Intent(getActivity(), Activity_Setting.class);
+                startActivity(intent);
+            }
+        });
+        mAdapter.setOnFollowerClickListener(new MyPageAdapter.OnFollowerClickListener() {
+            @Override
+            public void onFollowerClick(View v, int pos) {
+                Intent intent = new Intent(getActivity(), Activity_Follower.class);
+                startActivity(intent);
+
+            }
+        });
+        mAdapter.setOnFollowingClickListener(new MyPageAdapter.OnFollowingClickListener() {
+            @Override
+            public void onFollowingClick(View v, int pos) {
+                Intent intent = new Intent(getActivity(), Activity_Following.class);
                 startActivity(intent);
             }
         });

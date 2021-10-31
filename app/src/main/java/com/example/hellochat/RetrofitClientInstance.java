@@ -12,7 +12,6 @@ public class RetrofitClientInstance {
             if (retrofit == null) {
                 retrofit = new retrofit2.Retrofit.Builder()
                         .baseUrl(BASE_URL)
-                        // Json을 변환해줄 Gson변환기 등록
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
             }

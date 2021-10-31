@@ -2,6 +2,7 @@ package com.example.hellochat;
 
 import com.example.hellochat.DTO.DetailResult;
 import com.example.hellochat.DTO.EditData;
+import com.example.hellochat.DTO.FollowResult;
 import com.example.hellochat.DTO.GetContents;
 import com.example.hellochat.DTO.ResultData;
 import com.example.hellochat.DTO.UploadResult;
@@ -41,9 +42,9 @@ public interface NewsfeedApi {
     Call<EditData> getEditData(
             @Field("idx") String idx,
             @Field("content") String content,
-            @Field("image_uri") String img_uri ,
+            @Field("image_uri") String img_uri,
             @Field("record_path") String record_path
-            );
+    );
 
 
     @FormUrlEncoded
@@ -72,7 +73,7 @@ public interface NewsfeedApi {
             @Field("image_uri") String image_uri,
             @Field("record") String record
 
-            );
+    );
 
 
     @FormUrlEncoded
@@ -121,16 +122,34 @@ public interface NewsfeedApi {
 
     @FormUrlEncoded
     @POST("click_follow.php")
-    Call<ResultData>  click_follow(
+    Call<ResultData> click_follow(
             @Field("my_idx") int my_idx,
             @Field("target_idx") int target_idx
     );
 
     @FormUrlEncoded
     @POST("get_follow_state.php")
-    Call<ResultData>  get_followed(
+    Call<ResultData> get_followed(
             @Field("my_idx") int my_idx,
             @Field("target_idx") int target_idx
     );
+
+    @FormUrlEncoded
+    @POST("get_follower.php")
+    Call<FollowResult> get_follower(
+            @Field("my_idx") int my_idx,
+            @Field("page") int page,
+            @Field("limit") int limit
+
+    );
+
+    @FormUrlEncoded
+    @POST("get_following.php")
+    Call<FollowResult> get_following(
+            @Field("my_idx") int my_idx,
+            @Field("page") int page,
+            @Field("limit") int limit
+    );
+
 
 }

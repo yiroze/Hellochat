@@ -105,7 +105,7 @@ android:layout_height="match_parent">
 
         android:layout_gravity="center"
         android:layout_marginTop="4dp"
-        android:src="@drawable/no_porifile"
+        android:src="@drawable/no_profile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"

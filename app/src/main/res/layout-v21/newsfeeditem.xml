@@ -189,7 +189,7 @@
         android:layout_height="50sp"
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
-        android:src="@drawable/no_porifile"
+        android:src="@drawable/no_profile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.077"
         app:layout_constraintStart_toStartOf="parent"

@@ -308,7 +308,6 @@ public class Activity_Edit extends AppCompatActivity {
                     uriList.add(imageUri);
 
                 } else {
-
                     //여러개 선택한 경우
                     ClipData clipData = data.getClipData();
                     Log.e(TAG, "onActivityResult: " + clipData.getItemCount());

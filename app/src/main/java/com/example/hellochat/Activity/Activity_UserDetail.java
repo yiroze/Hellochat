@@ -50,6 +50,8 @@ public class Activity_UserDetail extends AppCompatActivity {
     LinearLayout follow, message;
     ImageView follwImage;
     TextView followText;
+    int user;
+    String user_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,14 +77,21 @@ public class Activity_UserDetail extends AppCompatActivity {
         follow.setOnClickListener(v -> {
             Follow(myidx,idx);
         });
-
+        message.setOnClickListener(v -> {
+            Intent intent_msg = new Intent(Activity_UserDetail.this , Activity_Chatting.class);
+            intent_msg.putExtra("user_idx" , user);
+            intent_msg.putExtra("user_name" , user_name);
+            startActivity(intent_msg);
+        });
     }
+
 
     public void InitView() {
         follow = (LinearLayout) findViewById(R.id.follow);
         follwImage = (ImageView) findViewById(R.id.follow_image);
         followText = (TextView) findViewById(R.id.follow_text);
         nestedScrollView = (NestedScrollView) findViewById(R.id.scroll_view);
+        message = findViewById(R.id.message);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_user);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(Activity_UserDetail.this);
@@ -103,6 +112,8 @@ public class Activity_UserDetail extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
                     result_data = response.body();
                     mypageData = result_data.body;
+                    user =mypageData.get(0).user_idx;
+                    user_name= mypageData.get(0).name;
                     mAdapter = new UserDetailAdapter(mypageData);
                     mRecyclerView.setAdapter(mAdapter);
                     mAdapter.notifyDataSetChanged();

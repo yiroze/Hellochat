@@ -5,6 +5,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,17 +18,21 @@ import com.example.hellochat.Fragment.Fragment_newsfeed;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
-
     String TAG = this.getClass().getName();
     Fragment_chat fragment_chat;
     Fragment_mypage fragment_mypage;
     Fragment_newsfeed fragment_newsfeed;
     public static MainActivity activity = null;    //액티비티 변수 선언
+    String idx;
+    private Intent serviceIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +45,13 @@ public class MainActivity extends AppCompatActivity {
         fragment_newsfeed = new Fragment_newsfeed();
         fragment_mypage = new Fragment_mypage();
         Intent intent = getIntent();
-        String idx = intent.getStringExtra("idx");
+        idx = intent.getStringExtra("idx");
         Log.d(TAG, "onCreate: "+idx);
         SharedPreferences pref = getSharedPreferences("LOGIN", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("Login_data" , idx);
         editor.apply();
+
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.main_layout ,fragment_chat , "chat").commitAllowingStateLoss();
@@ -138,7 +144,44 @@ public class MainActivity extends AppCompatActivity {
             return true;
           }
         });
+        JSONObject jo = new JSONObject();
+        try {
+            jo.put("user_idx" , Integer.parseInt(idx));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        if(ClientService.serviceIntent == null){
+            serviceIntent = new Intent(this, ClientService.class);
+            serviceIntent.putExtra("msg", jo.toString());
+            startService(serviceIntent);
+        }else {
+            serviceIntent = ClientService.serviceIntent;
+        }
+
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.d(TAG, "onNewIntent: 메인액티비티 뉴인텐트");
+
+        fragment_chat = (Fragment_chat) getSupportFragmentManager().findFragmentByTag("chat");
+        fragment_chat.get_ChatList(Integer.parseInt(idx));
 
 
+//        fragment_chat.InitAdapter();
+//        Log.d(TAG, "onNewIntent: 서버에서 메시지옴");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: ");
+        if(serviceIntent != null){
+            Log.d(TAG, "onDestroy: 스탑 써비쓰");
+            stopService(serviceIntent);
+            serviceIntent = null;
+        }
     }
 }

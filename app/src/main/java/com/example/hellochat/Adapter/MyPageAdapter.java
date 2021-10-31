@@ -1,6 +1,7 @@
 package com.example.hellochat.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.util.Log;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.hellochat.Activity.Activity_Follower;
 import com.example.hellochat.DTO.MypageData;
 import com.example.hellochat.R;
 
@@ -241,6 +243,29 @@ public class MyPageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             this.follower = itemView.findViewById(R.id.follower);
             this.following = itemView.findViewById(R.id.following);
 
+            follower.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION){
+                        if(onFollowerClickListener!=null){
+                            onFollowerClickListener.onFollowerClick(v , pos);
+                        }
+                    }
+                }
+            });
+            following.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION){
+                        if(onFollowingClickListener!=null){
+                            onFollowingClickListener.onFollowingClick(v , pos);
+                        }
+                    }
+                }
+            });
+
             update_myinfo_bnt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -388,16 +413,22 @@ public class MyPageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private OnFeedItemClickListener feedItemClickListener = null;
     private OnLikeClickListener likeClickListener = null;
     private OnMoreBntClickListener moreBntClickListener = null;
+    private OnFollowerClickListener onFollowerClickListener = null;
+    private OnFollowingClickListener onFollowingClickListener = null;
 
     public interface OnMyPageClickListener { void onmyPageClick(View v, int pos);}
     public interface OnFeedItemClickListener { void onFeedItemClick(View v, int pos);}
     public interface OnLikeClickListener { void onLikeClick(View v, int pos);}
     public interface OnMoreBntClickListener { void onMoreBntClick(View v, int pos);}
+    public interface OnFollowerClickListener { void onFollowerClick(View v, int pos);}
+    public interface OnFollowingClickListener { void onFollowingClick(View v, int pos);}
+
 
     public void setOnMyPageClickListener(MyPageAdapter.OnMyPageClickListener listener) { this.myPageClickListener = listener; }
     public void setOnFeedItemClickListener(MyPageAdapter.OnFeedItemClickListener listener) { this.feedItemClickListener = listener; }
     public void setOnLikeClickListener(MyPageAdapter.OnLikeClickListener listener) { this.likeClickListener = listener; }
     public void setOnMoreBntClickListener(MyPageAdapter.OnMoreBntClickListener listener){ this.moreBntClickListener = listener; }
-
+    public void setOnFollowerClickListener(MyPageAdapter.OnFollowerClickListener listener) { this.onFollowerClickListener = listener; }
+    public void setOnFollowingClickListener(MyPageAdapter.OnFollowingClickListener listener){ this.onFollowingClickListener = listener; }
 
 }
