@@ -3,55 +3,81 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.hellochat">
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.STORAGE" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" -->
+    <!-- tools:ignore="ScopedStorage" /> -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission
+        android:name="android.permission.CAPTURE_VIDEO_OUTPUT"
+        tools:ignore="ProtectedPermissions" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="HelloChat"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Hellochat"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="f1nqog39bn"/>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDxlqJAmop14T2rVg2x6ujS51wGgX9wV9Y"/>
+        <activity android:name=".Activity.Feed.Activity_Trans" android:theme="@android:style/Theme.Dialog" />
+        <activity android:name=".Activity.Feed.Activity_TTS" android:theme="@android:style/Theme.Dialog" />
+        <activity android:name=".Activity.Feed.Activity_Notification" />
+        <activity android:name=".Activity.Chatting.Activity_Receive" />
+
         <service
-            android:name=".ClientService"
+            android:name=".Service.ClientService"
             android:enabled="true"
             android:exported="true" />
         <service
-            android:name=".RestartService"
+            android:name=".Service.RestartService"
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".Activity.Activity_Chatting" />
-        <activity android:name=".Activity.Activity_Following" />
-        <activity android:name=".Activity.Activity_Follower" />
-        <activity android:name=".Activity.Activity_MyDetail" />
+        <activity android:name=".Activity.Chatting.Activity_Chatting" />
+        <activity android:name=".Activity.UserPage.Activity_Following" />
+        <activity android:name=".Activity.UserPage.Activity_Follower" />
+        <activity android:name=".Activity.UserPage.Activity_MyDetail" />
         <activity android:name=".Activity.Activity_ImageViewer" />
-        <activity android:name=".Activity.Activity_UserDetail" />
-        <activity android:name=".Activity.Activity_Setting" />
+        <activity android:name=".Activity.UserPage.Activity_UserDetail" />
+        <activity android:name=".Activity.Setting.Activity_Setting" />
         <activity
-            android:name=".Activity.Activity_modify_comment"
+            android:name=".Activity.Feed.Activity_modify_comment"
             android:theme="@style/Dialog" />
-        <activity android:name=".Activity.Activity_Detail" />
-        <activity android:name=".level_info" />
-        <activity android:name=".Activity.Activity_password" />
-        <activity android:name=".Activity.Activity_modify" />
+        <activity android:name=".Activity.Feed.Activity_Detail" />
+        <activity android:name=".Activity.Login.level_info" />
+        <activity android:name=".Activity.Login.Activity_password" />
+        <activity android:name=".Activity.Feed.Activity_modify" />
         <activity
-            android:name=".Activity.Activity_Edit"
+            android:name=".Activity.Feed.Activity_Edit"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".Splash">
             <intent-filter>
@@ -61,9 +87,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".Activity.Activity_Login" />
-        <activity android:name=".Activity.Activity_Join2" />
-        <activity android:name=".Activity.Activity_Join" />
+        <activity android:name=".Activity.Login.Activity_Login" />
+        <activity android:name=".Activity.Login.Activity_Join2" />
+        <activity android:name=".Activity.Login.Activity_Join" />
 
         <receiver android:name=".AlarmReceiver" />
         <receiver
@@ -75,6 +101,34 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name=".webRTC.ConnectActivity"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="appr.tc"
+                    android:scheme="https" />
+                <data
+                    android:host="appr.tc"
+                    android:scheme="http" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".webRTC.SettingsActivity"
+            android:label="@string/settings_name" />
+        <activity
+            android:name=".webRTC.CallActivity"
+            android:configChanges="orientation|smallestScreenSize|screenSize|screenLayout"
+            android:label="@string/app_name"
+            android:screenOrientation="fullUser"
+            android:theme="@style/CallActivityTheme" />
     </application>
 
 </manifest>

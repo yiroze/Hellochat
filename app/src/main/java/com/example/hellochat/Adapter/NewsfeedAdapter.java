@@ -1,14 +1,9 @@
 package com.example.hellochat.Adapter;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -26,24 +20,15 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.hellochat.Activity.Activity_Detail;
-import com.example.hellochat.Activity.Activity_modify;
-import com.example.hellochat.NewsfeedApi;
+import com.example.hellochat.Activity.Feed.Activity_Detail;
 import com.example.hellochat.R;
-import com.example.hellochat.DTO.ResultData;
-import com.example.hellochat.RetrofitClientInstance;
 import com.example.hellochat.DTO.ViewData;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -54,10 +39,16 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
     private static final String TAG = "NewsfeedAdapter";
     MediaPlayer mPlayer;
 
+
+    private OnContentLongClickListener longClickListener;
     private OnItemClickListener mListener;
     private OnMoreBntClickListener moreBntClickListener;
     private OpenUserDetail openUserDetail;
     private OpenMyDetail openMyDetail;
+
+    public interface OnContentLongClickListener {
+        void onContentLongClick(View v, int position);
+    }
 
     public interface OnItemClickListener {
         void onItemClick(View v, int position);
@@ -79,6 +70,10 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
         this.moreBntClickListener = listener;
     }
 
+    public void setOnLongClickListener(OnContentLongClickListener listener) {
+        this.longClickListener = listener;
+    }
+
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.mListener = listener;
     }
@@ -90,6 +85,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
     public void setOpenMyDetail(OpenMyDetail listener) {
         this.openMyDetail = listener;
     }
+
 
 
     public NewsfeedAdapter(ArrayList<ViewData> datalist) {
@@ -235,7 +231,22 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
             this.player = itemView.findViewById(R.id.player_layout);
             this.player_control = itemView.findViewById(R.id.player_control);
             this.seekBar = itemView.findViewById(R.id.SeekBar);
-
+            
+            
+            contents.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Log.d(TAG, "onLongClick: onLongClick: onLongClick: onLongClick: ");
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION){
+                        if(longClickListener != null){
+                            Log.d(TAG, "onLongClick: ");
+                            longClickListener.onContentLongClick(v , pos);
+                        }
+                    }
+                    return true;
+                }
+            });
 
             player_control.setOnClickListener(v -> {
                 int pos = getAdapterPosition();

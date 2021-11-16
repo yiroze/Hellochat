@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.hellochat.DTO.ChatList;
 import com.example.hellochat.R;
+import com.example.hellochat.Util.Util;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,6 +27,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
     private static final String TAG = "ChatListAdapter";
 
     private ArrayList<ChatList> mList;
+    Util util = new Util();
 
     public ChatListAdapter(ArrayList<ChatList> list) {
         this.mList = list;
@@ -46,7 +48,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         Date date = new Date();
         date.setTime(mList.get(position).date);
         holder.name.setText(mList.get(position).name);
-        holder.content.setText(mList.get(position).content);
         holder.date.setText(simpleDateFormat.format(date));
         if(mList.get(position).new_msg_cnt != 0){
             holder.new_msg_cnt.setVisibility(View.VISIBLE);
@@ -58,6 +59,23 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
             Glide.with(holder.profile)
                     .load(imageUrl)
                     .into(holder.profile);
+        }
+        if(mList.get(position).content_type >=4){
+            if(mList.get(position).content_type==4){
+                holder.content.setText("영상통화");
+            }else if(mList.get(position).content_type==5){
+                holder.content.setText("응답거부");
+            }else if(mList.get(position).content_type==6){
+                holder.content.setText("취소");
+            }else if(mList.get(position).content_type==8){
+                if(mList.get(position).content.equals("0")){
+                    holder.content.setText("취소");
+                }else{
+                    holder.content.setText(new StringBuilder().append("영상통화 ").append(util.secToText(Integer.parseInt(mList.get(position).content))).toString());
+                }
+            }
+        }else {
+            holder.content.setText(mList.get(position).content);
         }
     }
 

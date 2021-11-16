@@ -284,6 +284,20 @@ public class UserDetailAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHo
             this.seekBar = itemView.findViewById(R.id.SeekBar);
             this.image = itemView.findViewById(R.id.image_recyclerview);
 
+            contents.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION){
+                        if(longClickListener != null){
+                            Log.d(TAG, "onLongClick: ");
+                            longClickListener.onContentLongClick(v , pos);
+                        }
+                    }
+                    return true;
+                }
+            });
+
             heart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -377,17 +391,19 @@ public class UserDetailAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHo
     private MyPageAdapter.OnFeedItemClickListener feedItemClickListener = null;
     private MyPageAdapter.OnLikeClickListener likeClickListener = null;
     private MyPageAdapter.OnMoreBntClickListener moreBntClickListener = null;
+    private OnContentLongClickListener longClickListener;
 
     public interface OnMyPageClickListener { void onmyPageClick(View v, int pos);}
     public interface OnFeedItemClickListener { void onFeedItemClick(View v, int pos);}
     public interface OnLikeClickListener { void onLikeClick(View v, int pos);}
     public interface OnMoreBntClickListener { void onMoreBntClick(View v, int pos);}
+    public interface OnContentLongClickListener {void onContentLongClick(View v, int position);}
 
     public void setOnMyPageClickListener(MyPageAdapter.OnMyPageClickListener listener) { this.myPageClickListener = listener; }
     public void setOnFeedItemClickListener(MyPageAdapter.OnFeedItemClickListener listener) { this.feedItemClickListener = listener; }
     public void setOnLikeClickListener(MyPageAdapter.OnLikeClickListener listener) { this.likeClickListener = listener; }
     public void setOnMoreBntClickListener(MyPageAdapter.OnMoreBntClickListener listener){ this.moreBntClickListener = listener; }
-
+    public void setOnLongClickListener(OnContentLongClickListener listener) { this.longClickListener = listener; }
 
 
 }

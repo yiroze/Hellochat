@@ -46,6 +46,7 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private OnMoreBntClick_Contents contents_bnt = null;
     private OpenUserDetail openUserDetail;
     private NewsfeedAdapter.OpenMyDetail openMyDetail;
+    private OnContentLongClickListener longClickListener;
 
     MediaPlayer mPlayer;
 
@@ -238,6 +239,21 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             this.player_control = itemView.findViewById(R.id.player_control);
             this.seekBar = itemView.findViewById(R.id.SeekBar);
 
+
+            contents.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION){
+                        if(longClickListener != null){
+                            Log.d(TAG, "onLongClick: ");
+                            longClickListener.onContentLongClick(v , pos);
+                        }
+                    }
+                    return true;
+                }
+            });
+
             player_control.setOnClickListener(v -> {
                 int pos = getAdapterPosition();
                 getPlayer(pos , seekBar);
@@ -320,6 +336,20 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             this.player = itemView.findViewById(R.id.player_layout);
             this.player_control = itemView.findViewById(R.id.player_control);
             this.seekBar = itemView.findViewById(R.id.SeekBar);
+
+            contents.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION){
+                        if(longClickListener != null){
+                            Log.d(TAG, "onLongClick: ");
+                            longClickListener.onContentLongClick(v , pos);
+                        }
+                    }
+                    return true;
+                }
+            });
 
             player_control.setOnClickListener(v -> {
                 int pos = getAdapterPosition();
@@ -415,6 +445,21 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             this.player = itemView.findViewById(R.id.player_layout);
             this.player_control = itemView.findViewById(R.id.player_control);
             this.seekBar = itemView.findViewById(R.id.SeekBar);
+
+
+            contents.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION){
+                        if(longClickListener != null){
+                            Log.d(TAG, "onLongClick: ");
+                            longClickListener.onContentLongClick(v , pos);
+                        }
+                    }
+                    return true;
+                }
+            });
 
             player_control.setOnClickListener(v -> {
                 int pos = getAdapterPosition();
@@ -512,6 +557,8 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public interface OpenUserDetail {
         void openUserDetail(View v, int position);
     }
+    public interface OnContentLongClickListener {void onContentLongClick(View v, int position);}
+
 
     public void setOnClickListener(OnLikeClick listener) {
         this.mListener = listener;
@@ -540,6 +587,10 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void setOpenUserDetail(OpenUserDetail listener) {
         this.openUserDetail = listener;
     }
+
+    public void setOnLongClickListener(OnContentLongClickListener listener) { this.longClickListener = listener; }
+
+
     public void getPlayer(int pos , SeekBar seekBar){
         try {
             if (mPlayer != null) {    // 사용하기 전에

@@ -8,7 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.example.hellochat.Activity.Activity_Login;
+import com.example.hellochat.Activity.Login.Activity_Login;
 
 public class Splash extends AppCompatActivity {
 

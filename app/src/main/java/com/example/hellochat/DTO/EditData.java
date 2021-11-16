@@ -10,11 +10,15 @@ public class EditData {
     @SerializedName("msg")
     public String msg;
 
+    @SerializedName("idx")
+    public int idx;
+
     @Override
     public String toString() {
         return "EditData{" +
                 "result='" + result + '\'' +
                 ", msg='" + msg + '\'' +
+                ", idx='" + idx + '\'' +
                 '}';
     }
 }

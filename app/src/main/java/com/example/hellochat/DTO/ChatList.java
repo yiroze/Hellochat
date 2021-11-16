@@ -21,6 +21,11 @@ public class ChatList {
     @SerializedName("new_msg_cnt")
     public int new_msg_cnt;
 
+
+    @SerializedName("content_type")
+    public int content_type;
+
+
     @Override
     public String toString() {
         return "ChatList{" +
@@ -30,6 +35,7 @@ public class ChatList {
                 ", date=" + date +
                 ", friend_idx=" + friend_idx +
                 ", new_msg_cnt=" + new_msg_cnt +
+                ", content_type=" + content_type +
                 '}';
     }
 }

@@ -37,6 +37,9 @@ public class LoginData {
     @SerializedName("level3")
     public String level3;
 
+    @SerializedName("profile")
+    public String profile;
+
     @SerializedName("result")
     public String result;
 

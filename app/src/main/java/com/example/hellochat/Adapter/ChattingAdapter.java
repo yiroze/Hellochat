@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.hellochat.DTO.Chatting;
 import com.example.hellochat.R;
+import com.example.hellochat.Util.Util;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -30,13 +31,13 @@ import static android.content.Context.MODE_PRIVATE;
 public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = "ChattingAdapter";
     private ArrayList<Chatting> mList;
-    private final int RIGHT_CHAT = 1;
-    private final int LEFT_CHAT = 2;
-    private final int RIGHT_IMAGE = 3;
-    private final int LEFT_IMAGE = 4;
     private final int CONTENT_TYPE_TEXT = 1;
     private final int CONTENT_TYPE_IMAGE = 2;
-
+    private final int CONTENT_TYPE_CALL = 4;
+    private final int CONTENT_TYPE_CALL_REFUSE = 5;
+    private final int CONTENT_TYPE_CALL_CANCEL = 6;
+    private final int CONTENT_TYPE_CALL_DISCONNECT = 8;
+    Util util = new Util();
 
     private Context c;
     int my_idx;
@@ -58,17 +59,23 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (mList.get(viewType).content_type == CONTENT_TYPE_TEXT) {
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chatitem_my, parent, false);
                 holder = new ViewHolder(view);
-            } else {
+            } else if (mList.get(viewType).content_type == CONTENT_TYPE_IMAGE) {
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chatting_my_image, parent, false);
                 holder = new ImageViewHolder(view);
+            } else if (mList.get(viewType).content_type == CONTENT_TYPE_CALL || mList.get(viewType).content_type == CONTENT_TYPE_CALL_REFUSE || mList.get(viewType).content_type == CONTENT_TYPE_CALL_CANCEL || mList.get(viewType).content_type == CONTENT_TYPE_CALL_DISCONNECT) {
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chatting_call_item_my, parent, false);
+                holder = new CallViewHolder(view);
             }
         } else {
             if (mList.get(viewType).content_type == CONTENT_TYPE_TEXT) {
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chatiem, parent, false);
                 holder = new LeftViewHolder(view);
-            } else {
+            } else if (mList.get(viewType).content_type == CONTENT_TYPE_IMAGE) {
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chatting_image, parent, false);
                 holder = new LeftImageViewHolder(view);
+            } else if (mList.get(viewType).content_type == CONTENT_TYPE_CALL || mList.get(viewType).content_type == CONTENT_TYPE_CALL_REFUSE || mList.get(viewType).content_type == CONTENT_TYPE_CALL_CANCEL || mList.get(viewType).content_type == CONTENT_TYPE_CALL_DISCONNECT) {
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chatting_call_item, parent, false);
+                holder = new LeftCallViewHolder(view);
             }
         }
 //        if (viewType == RIGHT_CHAT) {
@@ -91,18 +98,17 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(@NonNull @NotNull RecyclerView.ViewHolder holder, int position) {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        int pos = getItemViewType(position);
         Date date = new Date();
         Date before_date = new Date();
         Date after_date = new Date();
         date.setTime(Long.parseLong(mList.get(position).date));
-        Log.d(TAG, "onBindViewHolder: "+mList.get(position).checked);
+        Log.d(TAG, "onBindViewHolder: " + mList.get(position).checked);
 
-        if(position != 0 ){
-            before_date.setTime(Long.parseLong(mList.get(position-1).date));
+        if (position != 0) {
+            before_date.setTime(Long.parseLong(mList.get(position - 1).date));
         }
-        if(position+1 != mList.size()){
-            after_date.setTime(Long.parseLong(mList.get(position+1).date));
+        if (position + 1 != mList.size()) {
+            after_date.setTime(Long.parseLong(mList.get(position + 1).date));
         }
         Log.d(TAG, "onBindViewHolder: " + simpleDateFormat.format(date) + simpleDateFormat.format(before_date));
         //프로필사진과 이름
@@ -118,13 +124,11 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             viewHolder.content.setText(mList.get(position).content);
             date.setTime(Long.parseLong(mList.get(position).date));
             viewHolder.date.setText(simpleDateFormat.format(date));
-            if(mList.get(position).checked == 1){
+            if (mList.get(position).checked == 1) {
                 viewHolder.checked.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 viewHolder.checked.setVisibility(View.GONE);
             }
-
-
 //            if (position + 1 >= mList.size()) {
 //                viewHolder.date.setVisibility(View.VISIBLE);
 //            } else {
@@ -150,7 +154,7 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 //                    viewHolder.date.setVisibility(View.VISIBLE);
 //                }
 //            }
-            if(position>0){
+            if (position > 0) {
                 if (mList.get(position - 1).accept_idx == mList.get(position).accept_idx) {
                     viewHolder.name.setVisibility(View.GONE);
                     viewHolder.profile.setVisibility(View.GONE);
@@ -175,9 +179,9 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             date.setTime(Long.parseLong(mList.get(position).date));
             viewHolder.date.setText(simpleDateFormat.format(date));
-            if(mList.get(position).checked == 1){
+            if (mList.get(position).checked == 1) {
                 viewHolder.checked.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 viewHolder.checked.setVisibility(View.GONE);
             }
 //            if (position + 1 >= mList.size()) {
@@ -196,7 +200,7 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 viewHolder.image.setAdapter(new ChatImageAdapter(image_item, c));
                 viewHolder.image.setLayoutManager(new GridLayoutManager(c, 1));
                 viewHolder.image.setHasFixedSize(false);
-            }else if(image_item.size() == 2 || image_item.size() == 4){
+            } else if (image_item.size() == 2 || image_item.size() == 4) {
                 viewHolder.image.setAdapter(new ChatImageAdapter(image_item, c));
                 viewHolder.image.setLayoutManager(new GridLayoutManager(c, 2));
                 viewHolder.image.setHasFixedSize(true);
@@ -210,7 +214,7 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             date.setTime(Long.parseLong(mList.get(position).date));
             viewHolder.date.setText(simpleDateFormat.format(date));
             viewHolder.name.setText(mList.get(position).name);
-            if(position>0){
+            if (position > 0) {
                 if (mList.get(position - 1).accept_idx == mList.get(position).accept_idx) {
                     viewHolder.name.setVisibility(View.GONE);
                     viewHolder.profile.setVisibility(View.GONE);
@@ -238,7 +242,7 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 viewHolder.image.setAdapter(new ChatImageAdapter(image_item, c));
                 viewHolder.image.setLayoutManager(new GridLayoutManager(c, 1));
                 viewHolder.image.setHasFixedSize(false);
-            }else if(image_item.size() == 2 || image_item.size() == 4){
+            } else if (image_item.size() == 2 || image_item.size() == 4) {
                 viewHolder.image.setAdapter(new ChatImageAdapter(image_item, c));
                 viewHolder.image.setLayoutManager(new GridLayoutManager(c, 2));
                 viewHolder.image.setHasFixedSize(true);
@@ -247,30 +251,78 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 viewHolder.image.setLayoutManager(new GridLayoutManager(c, 3));
                 viewHolder.image.setHasFixedSize(true);
             }
-        }
+        } else if (holder instanceof CallViewHolder) {
+            CallViewHolder viewHolder = (CallViewHolder) holder;
+            viewHolder.content.setText(mList.get(position).content);
+            date.setTime(Long.parseLong(mList.get(position).date));
+            viewHolder.date.setText(simpleDateFormat.format(date));
+            if (mList.get(position).checked == 1) {
+                viewHolder.checked.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.checked.setVisibility(View.GONE);
+            }
 
+            if (mList.get(position).content_type == CONTENT_TYPE_CALL) {
+                viewHolder.video_img.setImageResource(R.drawable.videocall);
+                viewHolder.content.setText("영상통화");
+            } else if (mList.get(position).content_type == CONTENT_TYPE_CALL_REFUSE) {
+                viewHolder.video_img.setImageResource(R.drawable.videocall_cancel);
+                viewHolder.content.setText("응답거부");
+            } else if (mList.get(position).content_type == CONTENT_TYPE_CALL_CANCEL) {
+                viewHolder.video_img.setImageResource(R.drawable.videocall_cancel);
+                viewHolder.content.setText("취소");
+            } else if (mList.get(position).content_type == CONTENT_TYPE_CALL_DISCONNECT) {
+                if (mList.get(position).content.equals("0")) {
+                    viewHolder.content.setText("취소");
+                } else {
+                    viewHolder.content.setText(util.secToText(Integer.parseInt(mList.get(position).content)));
+                }
+                viewHolder.video_img.setImageResource(R.drawable.videocall_cancel);
+            }
+
+        } else if (holder instanceof LeftCallViewHolder) {
+            LeftCallViewHolder viewHolder = (LeftCallViewHolder) holder;
+            if (position > 0) {
+                if (mList.get(position - 1).accept_idx == mList.get(position).accept_idx) {
+                    viewHolder.name.setVisibility(View.GONE);
+                    viewHolder.profile.setVisibility(View.GONE);
+                }
+            }
+            viewHolder.content.setText(mList.get(position).content);
+            date.setTime(Long.parseLong(mList.get(position).date));
+            viewHolder.date.setText(simpleDateFormat.format(date));
+            viewHolder.name.setText(mList.get(position).name);
+            if (mList.get(position).profile != null && !mList.get(position).profile.equals("")) {
+                String imageUrl = "http://3.37.204.197/hellochat/" + mList.get(position).profile;
+                //영상 썸네일 세팅
+                Glide.with(viewHolder.profile)
+                        .load(imageUrl)
+                        .into(viewHolder.profile);
+            }
+            if (mList.get(position).content_type == CONTENT_TYPE_CALL) {
+                viewHolder.video_img.setImageResource(R.drawable.videocall);
+                viewHolder.content.setText("영상통화");
+            } else if (mList.get(position).content_type == CONTENT_TYPE_CALL_REFUSE) {
+                viewHolder.video_img.setImageResource(R.drawable.videocall_cancel);
+                viewHolder.content.setText("응답거부");
+            } else if (mList.get(position).content_type == CONTENT_TYPE_CALL_CANCEL) {
+                viewHolder.video_img.setImageResource(R.drawable.videocall_cancel);
+                viewHolder.content.setText("취소");
+            } else if (mList.get(position).content_type == CONTENT_TYPE_CALL_DISCONNECT) {
+                if (mList.get(position).content.equals("0")) {
+                    viewHolder.content.setText("취소");
+                } else {
+                    viewHolder.content.setText(util.secToText(Integer.parseInt(mList.get(position).content)));
+                }
+                viewHolder.video_img.setImageResource(R.drawable.videocall_cancel);
+            }
+        }
     }
 
     @Override
     public int getItemViewType(int position) {
         return position;
     }
-//    @Override
-//    public int getItemViewType(int position) {
-//        if (mList.get(position).send_idx == my_idx) {
-//            if (mList.get(position).content_type == CONTENT_TYPE_TEXT) {
-//                return RIGHT_CHAT;
-//            } else {
-//                return RIGHT_IMAGE;
-//            }
-//        } else {
-//            if (mList.get(position).content_type == CONTENT_TYPE_TEXT) {
-//                return LEFT_CHAT;
-//            } else {
-//                return LEFT_IMAGE;
-//            }
-//        }
-//    }
 
     @Override
     public int getItemCount() {
@@ -278,7 +330,7 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView content, date , checked;
+        TextView content, date, checked;
 
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -302,7 +354,7 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public class ImageViewHolder extends RecyclerView.ViewHolder {
-        TextView date ,checked;
+        TextView date, checked;
         RecyclerView image;
 
         public ImageViewHolder(@NonNull @NotNull View itemView) {
@@ -326,6 +378,33 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             date = itemView.findViewById(R.id.date);
             profile = itemView.findViewById(R.id.profile);
             image = itemView.findViewById(R.id.image_recycler);
+        }
+    }
+
+    public class LeftCallViewHolder extends RecyclerView.ViewHolder {
+        TextView name, content, date;
+        ImageView profile, video_img;
+
+        public LeftCallViewHolder(@NonNull @NotNull View itemView) {
+            super(itemView);
+            name = itemView.findViewById(R.id.name);
+            content = itemView.findViewById(R.id.content);
+            date = itemView.findViewById(R.id.date);
+            video_img = itemView.findViewById(R.id.video_img);
+            profile = itemView.findViewById(R.id.profile);
+        }
+    }
+
+    public class CallViewHolder extends RecyclerView.ViewHolder {
+        TextView content, date, checked;
+        ImageView video_img;
+
+        public CallViewHolder(@NonNull @NotNull View itemView) {
+            super(itemView);
+            content = itemView.findViewById(R.id.content);
+            date = itemView.findViewById(R.id.date);
+            checked = itemView.findViewById(R.id.checked);
+            video_img = itemView.findViewById(R.id.video_img);
         }
     }
 

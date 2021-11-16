@@ -190,10 +190,9 @@
         android:layout_width="50sp"
         android:layout_height="50sp"
         android:layout_gravity="center"
-        android:layout_marginTop="16dp"
         android:src="@drawable/no_profile"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.077"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -237,13 +236,13 @@
         app:layout_constraintVertical_bias="0.363" />
 
     <TextView
-        android:textSize="20sp"
         android:id="@+id/contents"
         android:layout_width="370dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/profile"
         app:layout_constraintTop_toBottomOf="@+id/profile" />
 
 
@@ -344,7 +343,7 @@
         android:background="@drawable/player_back"
         app:layout_constraintEnd_toEndOf="@+id/contents"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/contents"
+        app:layout_constraintStart_toStartOf="@+id/profile"
         app:layout_constraintTop_toBottomOf="@+id/contents">
 
         <ImageView
@@ -368,8 +367,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.551"
-            />
+            app:layout_constraintVertical_bias="0.551" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -378,9 +376,8 @@
         android:layout_width="370dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        app:layout_constraintEnd_toEndOf="@+id/contents"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/contents"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/player_layout" />
 
 

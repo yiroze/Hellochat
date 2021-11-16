@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
+import com.example.hellochat.Service.ClientService;
+import com.example.hellochat.Service.RestartService;
+
 public class AlarmReceiver extends BroadcastReceiver {
     private static final String TAG = AlarmReceiver.class.getSimpleName();
     @Override

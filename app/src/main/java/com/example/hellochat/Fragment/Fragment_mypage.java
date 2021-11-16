@@ -1,6 +1,5 @@
 package com.example.hellochat.Fragment;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,28 +18,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import com.example.hellochat.Activity.Activity_Detail;
-import com.example.hellochat.Activity.Activity_Edit;
-import com.example.hellochat.Activity.Activity_Follower;
-import com.example.hellochat.Activity.Activity_Following;
-import com.example.hellochat.Activity.Activity_Setting;
-import com.example.hellochat.Activity.Activity_modify;
-import com.example.hellochat.Activity.Activity_modify_comment;
+import com.example.hellochat.Activity.Feed.Activity_Detail;
+import com.example.hellochat.Activity.UserPage.Activity_Follower;
+import com.example.hellochat.Activity.UserPage.Activity_Following;
+import com.example.hellochat.Activity.Setting.Activity_Setting;
+import com.example.hellochat.Activity.Feed.Activity_modify;
 import com.example.hellochat.Adapter.MyPageAdapter;
-import com.example.hellochat.Adapter.NewsfeedAdapter;
 import com.example.hellochat.DTO.MypageData;
 import com.example.hellochat.DTO.MypageResult;
 import com.example.hellochat.DTO.ResultData;
-import com.example.hellochat.DTO.ViewBoardData;
-import com.example.hellochat.DTO.ViewData;
-import com.example.hellochat.LoginApi;
-import com.example.hellochat.DTO.LoginData;
-import com.example.hellochat.MypageApi;
-import com.example.hellochat.NewsfeedApi;
+import com.example.hellochat.Interface.MypageApi;
+import com.example.hellochat.Interface.NewsfeedApi;
 import com.example.hellochat.R;
 import com.example.hellochat.RetrofitClientInstance;
 
@@ -51,7 +41,6 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Fragment_mypage extends Fragment {
 

@@ -15,15 +15,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.hellochat.Activity.Activity_Chatting;
+import com.example.hellochat.Activity.Chatting.Activity_Chatting;
 import com.example.hellochat.Adapter.ChatListAdapter;
-import com.example.hellochat.Adapter.DetailAdapter;
-import com.example.hellochat.ChatApi;
+import com.example.hellochat.Interface.ChatApi;
 import com.example.hellochat.DTO.ChatList;
 import com.example.hellochat.DTO.ChatListData;
-import com.example.hellochat.DTO.MypageData;
-import com.example.hellochat.DTO.MypageResult;
-import com.example.hellochat.MypageApi;
 import com.example.hellochat.R;
 import com.example.hellochat.RetrofitClientInstance;
 
@@ -92,8 +88,8 @@ public class Fragment_chat extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         get_ChatList(my_idx);
     }
 

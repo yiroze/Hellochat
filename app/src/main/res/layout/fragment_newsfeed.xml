@@ -15,30 +15,56 @@
 
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:background="#FFFFFF"
             app:layout_scrollFlags="scroll|enterAlways"
             >
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="50dp"
                 android:weightSum="10">
                 <View
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="7.5"
+                    android:layout_weight="7.3"
                     android:background="@color/white"
                     />
 
-                <ImageView
-                    android:id="@+id/alram"
-                    android:src="@drawable/bell"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:background="@color/white"
-                    android:layout_weight="1"
-                    />
+                    android:layout_gravity="center"
+                    android:layout_weight="1.2"
+                    >
+
+                    <ImageView
+                        android:id="@+id/alram"
+                        android:layout_width="30sp"
+                        android:layout_height="30sp"
+                        android:background="@color/white"
+                        android:src="@drawable/bell"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:visibility="gone"
+                        android:id="@+id/new_feed_count"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="@drawable/new_msg_background"
+                        android:gravity="center"
+                        android:text="1"
+                        android:textColor="#ffffff"
+                        android:textSize="10dp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/alram" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <View
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -49,7 +75,8 @@
                     android:id="@+id/edit"
                     android:src="@drawable/edit"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="30sp"
+                    android:layout_gravity="center"
                     android:background="@color/white"
                     android:layout_weight="1"
                     />
