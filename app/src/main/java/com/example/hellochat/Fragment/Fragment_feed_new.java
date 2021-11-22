@@ -30,11 +30,11 @@ import com.example.hellochat.Activity.UserPage.Activity_MyDetail;
 import com.example.hellochat.Activity.Feed.Activity_Trans;
 import com.example.hellochat.Activity.UserPage.Activity_UserDetail;
 import com.example.hellochat.Activity.Feed.Activity_modify;
-import com.example.hellochat.Adapter.NewsfeedAdapter;
+import com.example.hellochat.Adapter.Feed.NewsfeedAdapter;
 import com.example.hellochat.Service.ClientService;
 import com.example.hellochat.DTO.ResultData;
-import com.example.hellochat.DTO.ViewBoardData;
-import com.example.hellochat.DTO.ViewData;
+import com.example.hellochat.DTO.Feed.ViewBoardData;
+import com.example.hellochat.DTO.Feed.ViewData;
 import com.example.hellochat.Interface.NewsfeedApi;
 import com.example.hellochat.R;
 import com.example.hellochat.RetrofitClientInstance;
@@ -129,35 +129,8 @@ public class Fragment_feed_new extends Fragment {
         getdata(idx, page, limit);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume: ");
-    }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d(TAG, "onPause: ");
-    }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop: ");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy: ");
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.d(TAG, "onDestroyView: ");
-    }
 
     public void getdata(int idx, int page, int limit) {
         NewsfeedApi service = RetrofitClientInstance.getRetrofitInstance().create(NewsfeedApi.class);
@@ -263,7 +236,6 @@ public class Fragment_feed_new extends Fragment {
                 Log.d(TAG, "onFailure: 통신실패" + t.getMessage());
             }
         });
-
     }
     public void ClickHeart(int feed_idx, int user_idx ,int page, int limit , int accept_idx) {
         NewsfeedApi service = RetrofitClientInstance.getRetrofitInstance().create(NewsfeedApi.class);

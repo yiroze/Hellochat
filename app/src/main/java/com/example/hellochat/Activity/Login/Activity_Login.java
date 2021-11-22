@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.hellochat.Interface.LoginApi;
-import com.example.hellochat.DTO.LoginData;
+import com.example.hellochat.DTO.Login.LoginData;
 import com.example.hellochat.MainActivity;
 import com.example.hellochat.R;
 

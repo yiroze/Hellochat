@@ -46,13 +46,14 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.hellochat.Activity.UserPage.Activity_MyDetail;
 import com.example.hellochat.Activity.UserPage.Activity_UserDetail;
-import com.example.hellochat.Adapter.DetailAdapter;
-import com.example.hellochat.Adapter.NewsfeedAdapter;
+import com.example.hellochat.Adapter.Feed.DetailAdapter;
+import com.example.hellochat.Adapter.Feed.NewsfeedAdapter;
 import com.example.hellochat.Service.ClientService;
-import com.example.hellochat.DTO.CommentData;
-import com.example.hellochat.DTO.DetailData;
-import com.example.hellochat.DTO.DetailResult;
+import com.example.hellochat.DTO.Feed.CommentData;
+import com.example.hellochat.DTO.Feed.DetailData;
+import com.example.hellochat.DTO.Feed.DetailResult;
 import com.example.hellochat.DTO.ResultData;
 import com.example.hellochat.Interface.NewsfeedApi;
 import com.example.hellochat.R;
@@ -632,7 +633,7 @@ public class Activity_Detail extends AppCompatActivity {
         mAdapter.setOpenMyDetail(new NewsfeedAdapter.OpenMyDetail() {
             @Override
             public void openMyDetail(View v, int position) {
-                Intent intent = new Intent(Activity_Detail.this , Activity_UserDetail.class);
+                Intent intent = new Intent(Activity_Detail.this , Activity_MyDetail.class);
                 intent.putExtra("user_idx" , datainfo.get(position).user_idx);
                 startActivity(intent);
             }

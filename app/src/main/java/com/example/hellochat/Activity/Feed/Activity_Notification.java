@@ -16,9 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.hellochat.Activity.UserPage.Activity_UserDetail;
-import com.example.hellochat.Adapter.NotificationAdapter;
-import com.example.hellochat.DTO.NotificationData;
-import com.example.hellochat.DTO.NotificationResult;
+import com.example.hellochat.Adapter.Feed.NotificationAdapter;
+import com.example.hellochat.DTO.Feed.NotificationData;
+import com.example.hellochat.DTO.Feed.NotificationResult;
 import com.example.hellochat.DTO.ResultData;
 import com.example.hellochat.Interface.NewsfeedApi;
 import com.example.hellochat.R;

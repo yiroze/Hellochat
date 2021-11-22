@@ -1,9 +1,9 @@
 package com.example.hellochat.Interface;
 
-import com.example.hellochat.DTO.CheckEmail;
-import com.example.hellochat.DTO.JoinData;
+import com.example.hellochat.DTO.Login.CheckEmail;
+import com.example.hellochat.DTO.Login.JoinData;
 import com.example.hellochat.DTO.ResultData;
-import com.example.hellochat.DTO.UploadResult;
+import com.example.hellochat.DTO.Feed.UploadResult;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Fragment.Fragment_chat"
+    tools:context=".Fragment.Fragment_newsfeed"
     android:orientation="vertical"
     >
 
@@ -24,12 +24,33 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:weightSum="10">
-                <View
+                <LinearLayout
+                    android:background="@drawable/search_back"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="7.3"
-                    android:background="@color/white"
-                    />
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_weight="7.3">
+                    <ImageView
+                        android:src="@drawable/search"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_gravity="center_vertical"
+                        />
+
+                    <TextView
+                        android:text="게시물 검색"
+                        android:textColor="#858585"
+                        android:layout_marginLeft="12dp"
+                        android:textSize="16dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+
+                </LinearLayout>
+
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="0dp"
@@ -91,7 +112,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tablayout"
-            app:tabSelectedTextColor="#0000ff"
+            app:tabSelectedTextColor="#000000"
             app:tabTextColor="#AAAAAA">
             <!--            app:tabMode="scrollable"-->
 
@@ -107,6 +128,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tab2" />
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tab_Item3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tab3" />
 
         </com.google.android.material.tabs.TabLayout>
 

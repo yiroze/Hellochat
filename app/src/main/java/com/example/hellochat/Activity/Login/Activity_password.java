@@ -9,7 +9,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.hellochat.DTO.CheckEmail;
+import com.example.hellochat.DTO.Login.CheckEmail;
 import com.example.hellochat.GMailSender;
 import com.example.hellochat.Interface.JoinApi;
 import com.example.hellochat.R;

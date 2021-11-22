@@ -16,10 +16,10 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.hellochat.Activity.Chatting.Activity_Chatting;
-import com.example.hellochat.Adapter.ChatListAdapter;
+import com.example.hellochat.Adapter.Chatting.ChatListAdapter;
 import com.example.hellochat.Interface.ChatApi;
-import com.example.hellochat.DTO.ChatList;
-import com.example.hellochat.DTO.ChatListData;
+import com.example.hellochat.DTO.Chatting.ChatList;
+import com.example.hellochat.DTO.Chatting.ChatListData;
 import com.example.hellochat.R;
 import com.example.hellochat.RetrofitClientInstance;
 

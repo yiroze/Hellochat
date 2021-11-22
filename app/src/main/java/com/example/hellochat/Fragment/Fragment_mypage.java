@@ -25,11 +25,11 @@ import com.example.hellochat.Activity.UserPage.Activity_Follower;
 import com.example.hellochat.Activity.UserPage.Activity_Following;
 import com.example.hellochat.Activity.Setting.Activity_Setting;
 import com.example.hellochat.Activity.Feed.Activity_modify;
-import com.example.hellochat.Adapter.MyPageAdapter;
-import com.example.hellochat.DTO.MypageData;
-import com.example.hellochat.DTO.MypageResult;
+import com.example.hellochat.Adapter.UserPage.MyPageAdapter;
+import com.example.hellochat.DTO.UserPage.MypageData;
+import com.example.hellochat.DTO.UserPage.MypageResult;
 import com.example.hellochat.DTO.ResultData;
-import com.example.hellochat.Interface.MypageApi;
+import com.example.hellochat.Interface.UserPageApi;
 import com.example.hellochat.Interface.NewsfeedApi;
 import com.example.hellochat.R;
 import com.example.hellochat.RetrofitClientInstance;
@@ -123,7 +123,7 @@ public class Fragment_mypage extends Fragment {
     }
 
     public void getMyPageData(int user_idx , int page , int limit){
-        MypageApi service = RetrofitClientInstance.getRetrofitInstance().create(MypageApi.class);
+        UserPageApi service = RetrofitClientInstance.getRetrofitInstance().create(UserPageApi.class);
         Call<MypageResult> call = service.getMypage(user_idx, page, limit);
         call.enqueue(new Callback<MypageResult>() {
             @Override

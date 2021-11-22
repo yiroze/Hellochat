@@ -39,9 +39,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.hellochat.Adapter.MultiImageAdapter;
-import com.example.hellochat.DTO.GetContents;
-import com.example.hellochat.DTO.UploadResult;
+import com.example.hellochat.Adapter.Image.MultiImageAdapter;
+import com.example.hellochat.DTO.Feed.GetContents;
+import com.example.hellochat.DTO.Feed.UploadResult;
 import com.example.hellochat.Interface.JoinApi;
 import com.example.hellochat.Interface.NewsfeedApi;
 import com.example.hellochat.R;

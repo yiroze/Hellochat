@@ -15,8 +15,8 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.hellochat.Activity.Feed.Activity_Edit;
 import com.example.hellochat.Activity.Feed.Activity_Notification;
-import com.example.hellochat.Adapter.PagerAdapter;
-import com.example.hellochat.DTO.NotificationCount;
+import com.example.hellochat.Adapter.Image.PagerAdapter;
+import com.example.hellochat.DTO.Feed.NotificationCount;
 import com.example.hellochat.Interface.NewsfeedApi;
 import com.example.hellochat.R;
 import com.example.hellochat.RetrofitClientInstance;
@@ -55,6 +55,7 @@ public class Fragment_newsfeed extends Fragment  {
             Intent intent = new Intent(getActivity() , Activity_Notification.class);
             startActivity(intent);
         });
+
         return view;
     }
 

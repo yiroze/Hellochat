@@ -15,7 +15,7 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.hellochat.PlayState;
+import com.example.hellochat.Util.PlayState;
 import com.example.hellochat.R;
 import com.example.hellochat.Interface.TextPlayer;
 

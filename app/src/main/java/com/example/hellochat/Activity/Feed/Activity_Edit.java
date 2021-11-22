@@ -41,11 +41,11 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.hellochat.Adapter.MultiImageAdapter;
+import com.example.hellochat.Adapter.Image.MultiImageAdapter;
 import com.example.hellochat.Service.ClientService;
-import com.example.hellochat.DTO.EditData;
+import com.example.hellochat.DTO.Feed.EditData;
 import com.example.hellochat.DTO.ResultData;
-import com.example.hellochat.DTO.UploadResult;
+import com.example.hellochat.DTO.Feed.UploadResult;
 import com.example.hellochat.Interface.JoinApi;
 import com.example.hellochat.Interface.NewsfeedApi;
 import com.example.hellochat.R;

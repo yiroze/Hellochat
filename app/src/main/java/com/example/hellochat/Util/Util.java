@@ -58,5 +58,63 @@ public class Util {
         }
         return null;
     }
+    public String ReturnLanguageName(String lang) {
+        switch (lang) {
+            case "KR":
+                return "Korean";
+            case "EN":
+                return "English";
+            case "CN":
+                return "Chinese";
+            case "FR":
+                return "French";
+            case "ES":
+                return "Spanish";
+            case "AR":
+                return "Arabic";
+            case "RU":
+                return "Russian";
+            case "DE":
+                return "German";
+            case "JP":
+                return "Japanese";
+            case "PT":
+                return "Portuguese";
+            case "HD":
+                return "Hindi";
+            case "BG":
+                return "Bengali";
+        }
+        return null;
+    }
 
+    public String ReturnLanguageName2alpha(String lang) {
+        switch (lang) {
+            case "Korean":
+                return "KR";
+            case "English":
+                return "EN";
+            case "Chinese":
+                return "CN";
+            case "French":
+                return "FR";
+            case "Spanish":
+                return "ES";
+            case "Arabic":
+                return "AR";
+            case "Russian":
+                return "RU";
+            case "German":
+                return "DE";
+            case "Japanese":
+                return "JP";
+            case "Portuguese":
+                return "PT";
+            case "Hindi":
+                return "HD";
+            case "Bengali":
+                return "BG";
+        }
+        return null;
+    }
 }

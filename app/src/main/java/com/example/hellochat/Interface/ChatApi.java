@@ -1,8 +1,7 @@
 package com.example.hellochat.Interface;
 
-import com.example.hellochat.DTO.ChatData;
-import com.example.hellochat.DTO.ChatListData;
-import com.example.hellochat.DTO.MypageResult;
+import com.example.hellochat.DTO.Chatting.ChatData;
+import com.example.hellochat.DTO.Chatting.ChatListData;
 import com.example.hellochat.DTO.ResultData;
 
 import retrofit2.Call;

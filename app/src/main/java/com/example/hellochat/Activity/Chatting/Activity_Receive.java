@@ -19,7 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.hellochat.Service.ClientService;
-import com.example.hellochat.DTO.LoginData;
+import com.example.hellochat.DTO.Login.LoginData;
 import com.example.hellochat.Interface.LoginApi;
 import com.example.hellochat.R;
 import com.example.hellochat.RetrofitClientInstance;

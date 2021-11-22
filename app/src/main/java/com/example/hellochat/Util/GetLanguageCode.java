@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.example.hellochat.Activity.Feed.Activity_TTS;
-import com.example.hellochat.Papago;
 
 public class GetLanguageCode extends Thread {
     String text;

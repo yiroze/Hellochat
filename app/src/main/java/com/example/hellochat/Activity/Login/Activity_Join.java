@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.example.hellochat.DTO.CheckEmail;
+import com.example.hellochat.DTO.Login.CheckEmail;
 import com.example.hellochat.Interface.JoinApi;
 import com.example.hellochat.R;
 import com.example.hellochat.RetrofitClientInstance;

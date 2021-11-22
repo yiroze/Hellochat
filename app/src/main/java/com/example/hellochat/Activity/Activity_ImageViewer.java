@@ -10,7 +10,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.hellochat.Adapter.ImageViewerAdapter;
+import com.example.hellochat.Adapter.Image.ImageViewerAdapter;
 import com.example.hellochat.R;
 
 import java.text.MessageFormat;

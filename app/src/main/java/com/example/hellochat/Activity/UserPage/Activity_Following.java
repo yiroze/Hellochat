@@ -15,10 +15,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.hellochat.Adapter.FollowerAdapter;
-import com.example.hellochat.Adapter.FollowingAdapter;
-import com.example.hellochat.DTO.FollowData;
-import com.example.hellochat.DTO.FollowResult;
+import com.example.hellochat.Adapter.UserPage.FollowerAdapter;
+import com.example.hellochat.Adapter.UserPage.FollowingAdapter;
+import com.example.hellochat.DTO.UserPage.FollowData;
+import com.example.hellochat.DTO.UserPage.FollowResult;
 import com.example.hellochat.Interface.NewsfeedApi;
 import com.example.hellochat.R;
 import com.example.hellochat.RetrofitClientInstance;

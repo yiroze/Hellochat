@@ -226,12 +226,11 @@
         android:id="@+id/more"
         android:layout_width="30sp"
         android:layout_height="30sp"
-        android:layout_marginTop="12dp"
         android:src="@drawable/more"
+        app:layout_constraintBottom_toBottomOf="@+id/date"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.959"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/date"
+        app:layout_constraintTop_toTopOf="@+id/date" />
 
     <TextView
         android:id="@+id/contents"
@@ -304,11 +303,11 @@
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:layout_marginRight="20dp"
-        app:layout_constraintBottom_toBottomOf="@+id/more"
-        app:layout_constraintEnd_toStartOf="@+id/more"
-        app:layout_constraintTop_toTopOf="@+id/more" />
+        android:textSize="15dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout

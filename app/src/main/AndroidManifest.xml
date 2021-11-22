@@ -42,14 +42,28 @@
         android:theme="@style/Theme.Hellochat"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <activity android:name=".Activity.Feed.Activity_Search"></activity>
+        <activity android:name=".Activity.Setting.Activity_SelectLanguageLevel" />
+        <activity android:name=".Activity.Setting.Activity_SelectLanguage" />
+        <activity android:name=".Activity.Setting.Activity_SettingHobby" />
+        <activity android:name=".Activity.Setting.Activity_SettingPlaceOfBirth" />
+        <activity android:name=".Activity.Setting.Activity_SettingIntroduce" />
+        <activity android:name=".Activity.Setting.Activity_SettingLanguage" />
+        <activity android:name=".Activity.Setting.Activity_SettingName" />
+
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
-            android:value="f1nqog39bn"/>
+            android:value="f1nqog39bn" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDxlqJAmop14T2rVg2x6ujS51wGgX9wV9Y"/>
-        <activity android:name=".Activity.Feed.Activity_Trans" android:theme="@android:style/Theme.Dialog" />
-        <activity android:name=".Activity.Feed.Activity_TTS" android:theme="@android:style/Theme.Dialog" />
+            android:value="AIzaSyDxlqJAmop14T2rVg2x6ujS51wGgX9wV9Y" />
+
+        <activity
+            android:name=".Activity.Feed.Activity_Trans"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:name=".Activity.Feed.Activity_TTS"
+            android:theme="@android:style/Theme.Dialog" />
         <activity android:name=".Activity.Feed.Activity_Notification" />
         <activity android:name=".Activity.Chatting.Activity_Receive" />
 
@@ -129,6 +143,23 @@
             android:label="@string/app_name"
             android:screenOrientation="fullUser"
             android:theme="@style/CallActivityTheme" />
+
+        <activity
+            android:name="com.soundcloud.android.crop.CropImageActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.hellochat.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
     </application>
 
 </manifest>

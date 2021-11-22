@@ -31,12 +31,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.hellochat.Adapter.ChattingAdapter;
+import com.example.hellochat.Adapter.Chatting.ChattingAdapter;
 import com.example.hellochat.Interface.ChatApi;
 import com.example.hellochat.Service.ClientService;
-import com.example.hellochat.DTO.ChatData;
-import com.example.hellochat.DTO.Chatting;
-import com.example.hellochat.DTO.UploadResult;
+import com.example.hellochat.DTO.Chatting.ChatData;
+import com.example.hellochat.DTO.Chatting.Chatting;
+import com.example.hellochat.DTO.Feed.UploadResult;
 import com.example.hellochat.Interface.JoinApi;
 import com.example.hellochat.R;
 import com.example.hellochat.RetrofitClientInstance;

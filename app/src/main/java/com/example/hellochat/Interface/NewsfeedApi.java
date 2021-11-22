@@ -1,14 +1,14 @@
 package com.example.hellochat.Interface;
 
-import com.example.hellochat.DTO.CommentData;
-import com.example.hellochat.DTO.DetailResult;
-import com.example.hellochat.DTO.EditData;
-import com.example.hellochat.DTO.FollowResult;
-import com.example.hellochat.DTO.GetContents;
-import com.example.hellochat.DTO.NotificationCount;
-import com.example.hellochat.DTO.NotificationResult;
+import com.example.hellochat.DTO.Feed.CommentData;
+import com.example.hellochat.DTO.Feed.DetailResult;
+import com.example.hellochat.DTO.Feed.EditData;
+import com.example.hellochat.DTO.UserPage.FollowResult;
+import com.example.hellochat.DTO.Feed.GetContents;
+import com.example.hellochat.DTO.Feed.NotificationCount;
+import com.example.hellochat.DTO.Feed.NotificationResult;
 import com.example.hellochat.DTO.ResultData;
-import com.example.hellochat.DTO.ViewBoardData;
+import com.example.hellochat.DTO.Feed.ViewBoardData;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -24,6 +24,14 @@ public interface NewsfeedApi {
     @FormUrlEncoded
     @POST("view_board_api.php")
     Call<ViewBoardData> getViewBoard(
+            @Field("idx") int idx,
+            @Field("page") int page,
+            @Field("limit") int limit
+    );
+
+    @FormUrlEncoded
+    @POST("view_board_around_api.php")
+    Call<ViewBoardData> getViewAround(
             @Field("idx") int idx,
             @Field("page") int page,
             @Field("limit") int limit

@@ -4,7 +4,6 @@ import android.os.Message;
 import android.util.Log;
 
 import com.example.hellochat.Activity.Feed.Activity_Trans;
-import com.example.hellochat.Papago;
 
 public class TransThread extends Thread {
     private static final String TAG = "NetWork";

@@ -30,16 +30,17 @@ import com.example.hellochat.Activity.UserPage.Activity_MyDetail;
 import com.example.hellochat.Activity.Feed.Activity_Trans;
 import com.example.hellochat.Activity.UserPage.Activity_UserDetail;
 import com.example.hellochat.Activity.Feed.Activity_modify;
-import com.example.hellochat.Adapter.NewsfeedAdapter;
+import com.example.hellochat.Adapter.Feed.NewsfeedAdapter;
 import com.example.hellochat.Service.ClientService;
 import com.example.hellochat.DTO.ResultData;
-import com.example.hellochat.DTO.ViewBoardData;
-import com.example.hellochat.DTO.ViewData;
+import com.example.hellochat.DTO.Feed.ViewBoardData;
+import com.example.hellochat.DTO.Feed.ViewData;
 import com.example.hellochat.Interface.NewsfeedApi;
-import com.example.hellochat.Papago;
+import com.example.hellochat.Util.Papago;
 import com.example.hellochat.R;
 import com.example.hellochat.RetrofitClientInstance;
 import com.example.hellochat.Util.GetLanguageCode;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,12 +61,10 @@ public class Fragment_feed_following extends Fragment {
     ViewBoardData datalist;
     RecyclerView mRecyclerView;
     ArrayList<ViewData> datainfo;
-    ImageView bell, edit;
     int idx;
     NestedScrollView nestedScrollView;
     ProgressBar progressBar;
     int page = 1, limit = 10;
-    Papago papago = new Papago();
     ViewGroup contain;
     TextToSpeech tts;
 
@@ -169,6 +168,7 @@ public class Fragment_feed_following extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         Log.d(TAG, "onDestroyView: ");
+
     }
 
     public void getdata(int idx, int page, int limit) {

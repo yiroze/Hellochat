@@ -9,11 +9,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,21 +24,35 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager.widget.ViewPager;
 
-import com.example.hellochat.Activity.Setting.Activity_Setting;
-import com.example.hellochat.Activity.Feed.Activity_Trans;
+import com.bumptech.glide.Glide;
+import com.example.hellochat.Activity.Chatting.Activity_Chatting;
 import com.example.hellochat.Activity.Feed.Activity_Detail;
 import com.example.hellochat.Activity.Feed.Activity_Edit;
-import com.example.hellochat.Adapter.MyPageAdapter;
-import com.example.hellochat.Adapter.UserDetailAdapter;
-import com.example.hellochat.DTO.MypageData;
-import com.example.hellochat.DTO.MypageResult;
+import com.example.hellochat.Activity.Feed.Activity_Trans;
+import com.example.hellochat.Activity.Setting.Activity_Setting;
+import com.example.hellochat.Adapter.UserPage.MyPageAdapter;
+import com.example.hellochat.Adapter.UserPage.UserDetailAdapter;
+import com.example.hellochat.Adapter.UserPage.UserViewPagerAdapter;
 import com.example.hellochat.DTO.ResultData;
-import com.example.hellochat.Interface.MypageApi;
+import com.example.hellochat.DTO.UserPage.ModifyResult;
+import com.example.hellochat.DTO.UserPage.MypageData;
+import com.example.hellochat.DTO.UserPage.MypageResult;
 import com.example.hellochat.Interface.NewsfeedApi;
+import com.example.hellochat.Interface.UserPageApi;
 import com.example.hellochat.R;
 import com.example.hellochat.RetrofitClientInstance;
 import com.example.hellochat.Util.GetLanguageCode;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.tabs.TabLayout;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -43,39 +60,32 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Activity_MyDetail extends AppCompatActivity {
+public class Activity_MyDetail extends AppCompatActivity implements OnMapReadyCallback {
     String TAG = this.getClass().getName();
     int idx, myidx;
-    RecyclerView mRecyclerView;
-    MypageResult result_data;
-    ArrayList<MypageData> mypageData;
-    UserDetailAdapter mAdapter;
-    int page = 1, limit = 10;
-    NestedScrollView nestedScrollView;
-    ProgressBar progressBar;
-    SwipeRefreshLayout refreshLayout;
-    LinearLayout modify, edit;
+    ViewPager viewPager;
+    TabLayout tabLayout;
+    ImageView profile, follwImage, no_location_image, back;
+    TextView name, mylang, mylang2, mylang3, study_lang, study_lang2, study_lang3, followText;
+    LinearLayout mylang2_layout, mylang3_layout, study_lang2_layout, study_lang3_layout, modify, edit;
+    ProgressBar studylang_level, studylang_level2, studylang_level3;
+    String user_name;
+    private GoogleMap mMap;
+    ModifyResult mData;
+    LatLng NOW;
+    MarkerOptions markerOptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_detail);
+        SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        supportMapFragment.getMapAsync(this);
         Intent intent = getIntent();
         idx = intent.getIntExtra("user_idx", 0);
-        Log.d(TAG, "onCreateView: " + idx);
         InitView();
-        mypageData = new ArrayList<>();
-        getMyPageData(idx, page, limit);
-        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                if (scrollY == v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight()) {
-                    page++;
-                    progressBar.setVisibility(View.VISIBLE);
-                    getMyPageData(idx, page, limit);
-                }
-            }
-        });
+        myidx = GetUserID();
+        getMyData(idx);
         modify.setOnClickListener(v -> {
             Intent intentSet = new Intent(Activity_MyDetail.this, Activity_Setting.class);
             startActivity(intentSet);
@@ -85,118 +95,134 @@ public class Activity_MyDetail extends AppCompatActivity {
             Intent intentEdit = new Intent(Activity_MyDetail.this, Activity_Edit.class);
             startActivity(intentEdit);
         });
+        back.setOnClickListener(v -> {
+            finish();
+        });
+    }
+
+    @Override
+    public void onMapReady(@NonNull @NotNull GoogleMap googleMap) {
+        mMap = googleMap;
     }
 
     public void InitView() {
-        modify = (LinearLayout) findViewById(R.id.modify);
-        edit = (LinearLayout) findViewById(R.id.edit);
-        nestedScrollView = (NestedScrollView) findViewById(R.id.scroll_view);
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_user);
-        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(Activity_MyDetail.this);
-        mRecyclerView.setLayoutManager(mLinearLayoutManager);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
-        SharedPreferences pref = getSharedPreferences("LOGIN", MODE_PRIVATE);
-        myidx = Integer.parseInt(pref.getString("Login_data", ""));
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        UserViewPagerAdapter pagerAdapter = new UserViewPagerAdapter(getSupportFragmentManager() , idx);
+        viewPager.setAdapter(pagerAdapter);
+        tabLayout = (TabLayout) findViewById(R.id.tablayout);
+        tabLayout.setupWithViewPager(viewPager);
+        modify = (LinearLayout) findViewById(R.id.modify);
+        edit = (LinearLayout) findViewById(R.id.edit);
+        follwImage = (ImageView) findViewById(R.id.follow_image);
+        followText = (TextView) findViewById(R.id.follow_text);
+        name = findViewById(R.id.name);
+        mylang = findViewById(R.id.mylang);
+        mylang2 = findViewById(R.id.mylang2);
+        mylang3 = findViewById(R.id.mylang3);
+        study_lang = findViewById(R.id.study_lang);
+        study_lang2 = findViewById(R.id.study_lang2);
+        study_lang3 = findViewById(R.id.study_lang3);
+        mylang2_layout = findViewById(R.id.mylang2_layout);
+        mylang3_layout = findViewById(R.id.mylang3_layout);
+        study_lang2_layout = findViewById(R.id.study_lang2_layout);
+        study_lang3_layout = findViewById(R.id.study_lang3_layout);
+        studylang_level = findViewById(R.id.studylang_level);
+        studylang_level2 = findViewById(R.id.studylang_level2);
+        studylang_level3 = findViewById(R.id.studylang_level3);
+        profile = findViewById(R.id.profile);
+        no_location_image = findViewById(R.id.no_location_image);
+        back = findViewById(R.id.back);
+
     }
 
-    public void getMyPageData(int user_idx, int page, int limit) {
-        MypageApi service = RetrofitClientInstance.getRetrofitInstance().create(MypageApi.class);
-        Call<MypageResult> call = service.getMypage(user_idx, page, limit);
-        call.enqueue(new Callback<MypageResult>() {
+
+    public void getMyData(int user_idx) {
+        UserPageApi service = RetrofitClientInstance.getRetrofitInstance().create(UserPageApi.class);
+        Call<ModifyResult> call = service.getMyData(user_idx);
+        call.enqueue(new Callback<ModifyResult>() {
             @Override
-            public void onResponse(Call<MypageResult> call, Response<MypageResult> response) {
-                if (response.isSuccessful()) {
-                    progressBar.setVisibility(View.GONE);
-                    result_data = response.body();
-                    mypageData = result_data.body;
-                    mAdapter = new UserDetailAdapter(mypageData);
-                    mRecyclerView.setAdapter(mAdapter);
-                    mAdapter.notifyDataSetChanged();
-                    Log.d(TAG, "onResponse: " + mypageData);
-                    setClickListener(mAdapter, user_idx, page, limit);
+            public void onResponse(Call<ModifyResult> call, Response<ModifyResult> response) {
+                Log.d(TAG, "onResponse: " + response.body());
+                mData = response.body();
+                name.setText(mData.name);
+                if (mData.longitude != 0 && mData.latitude != 0) {
+                    UpdateLocation(mData.latitude, mData.longitude);
+                }
+                mylang.setText(mData.mylang);
+                if (mData.mylang2 != null) {
+                    mylang2.setText(mData.mylang2);
+                    mylang2_layout.setVisibility(View.VISIBLE);
+                } else {
+                    mylang2.setText("");
+                    mylang2_layout.setVisibility(View.GONE);
+                }
+                if (mData.mylang3 != null) {
+                    mylang3.setText(mData.mylang3);
+                    mylang3_layout.setVisibility(View.VISIBLE);
+                } else {
+                    mylang3.setText("");
+                    mylang3_layout.setVisibility(View.GONE);
+                }
+                study_lang.setText(mData.studylang);
+                studylang_level.setProgress(mData.studylang_level);
+                if (mData.studylang2 != null) {
+                    study_lang2.setText(mData.studylang2);
+                    studylang_level2.setProgress(mData.studylang_level2);
+                    study_lang2_layout.setVisibility(View.VISIBLE);
+                } else {
+                    study_lang2.setText("");
+                    studylang_level2.setProgress(0);
+                    study_lang2_layout.setVisibility(View.GONE);
+                }
+                if (mData.studylang3 != null) {
+                    study_lang3.setText(mData.studylang3);
+                    studylang_level3.setProgress(mData.studylang_level3);
+                    study_lang3_layout.setVisibility(View.VISIBLE);
+                } else {
+                    study_lang3.setText("");
+                    studylang_level3.setProgress(0);
+                    study_lang3_layout.setVisibility(View.GONE);
+                }
+                if ( mData.profile != null) {
+                    Glide.with(profile)
+                            .load("http://3.37.204.197/hellochat/" + mData.profile)
+                            .into(profile);
                 }
             }
 
             @Override
-            public void onFailure(Call<MypageResult> call, Throwable t) {
+            public void onFailure(Call<ModifyResult> call, Throwable t) {
             }
         });
     }
 
-    public void setClickListener(UserDetailAdapter mAdapter, int user_idx, int page, int limit) {
-        mAdapter.setOnFeedItemClickListener(new MyPageAdapter.OnFeedItemClickListener() {
-            @Override
-            public void onFeedItemClick(View v, int pos) {
-                Intent intent = new Intent(Activity_MyDetail.this, Activity_Detail.class);
-                intent.putExtra("feed_idx", mypageData.get(pos).feed_idx);
-                startActivity(intent);
-            }
-        });
-        mAdapter.setOnLikeClickListener(new MyPageAdapter.OnLikeClickListener() {
-            @Override
-            public void onLikeClick(View v, int pos) {
-                ClickHeart(mypageData.get(pos).feed_idx, user_idx, page, limit);
-            }
-        });
-        mAdapter.setOnLongClickListener(new UserDetailAdapter.OnContentLongClickListener() {
-            @Override
-            public void onContentLongClick(View v, int position) {
-                PopupMenu popupMenu = new PopupMenu(Activity_MyDetail.this, v);
-                popupMenu.getMenuInflater().inflate(R.menu.menulist, popupMenu.getMenu());
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.M)
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.trans:
-                                Log.d(TAG, "onMenuItemClick: "+ getTargetLang());
-                                Intent intentTrans = new Intent(Activity_MyDetail.this, Activity_Trans.class);
-                                intentTrans.putExtra("content" , mypageData.get(position).contents);
-                                intentTrans.putExtra("targetLang" , getTargetLang());
-                                startActivity(intentTrans);
-                                return true;
-
-                            case R.id.tts:
-                                String text = mypageData.get(position).contents;
-                                new GetLanguageCode(text , Activity_MyDetail.this).start();
-                                return true;
-
-                            case R.id.copy:
-                                ClipboardManager clipboardManager = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
-                                ClipData clipData = ClipData.newPlainText("text",mypageData.get(position).contents); //클립보드에 ID라는 이름표로 id 값을 복사하여 저장
-                                clipboardManager.setPrimaryClip(clipData);
-                                Toast.makeText( Activity_MyDetail.this, "복사되었습니다.",Toast.LENGTH_SHORT).show();
-                                return true;
-
-                        }
-                        return false;
-                    }
-                });
-                popupMenu.show();
-            }
-        });
+    void UpdateLocation(double latitude, double longitude) {
+        if (latitude != 0 && longitude != 0) {
+            NOW = new LatLng(latitude, longitude);
+            markerOptions = new MarkerOptions();
+            markerOptions.position(NOW);
+            Log.d(TAG, "UpdateLocation: "+NOW.latitude);
+            Log.d(TAG, "latitude: "+latitude);
+            Log.d(TAG, "longitude: "+longitude);
+            mMap.addMarker(markerOptions);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(NOW, 4));
+            no_location_image.setVisibility(View.GONE);
+        } else {
+            no_location_image.setVisibility(View.VISIBLE);
+        }
     }
 
-    public void ClickHeart(int feed_idx, int user_idx, int page, int limit) {
-        NewsfeedApi service = RetrofitClientInstance.getRetrofitInstance().create(NewsfeedApi.class);
-        Call<ResultData> call = service.click_like(feed_idx, user_idx);
-        call.enqueue(new Callback<ResultData>() {
-            @Override
-            public void onResponse(Call<ResultData> call, Response<ResultData> response) {
-                Log.d(TAG, "onResponse: " + user_idx);
-                getMyPageData(user_idx, page, limit);
-            }
-
-            @Override
-            public void onFailure(Call<ResultData> call, Throwable t) {
-                Log.d(TAG, "onFailure: ");
-            }
-        });
+    public int GetUserID() {
+        SharedPreferences pref = getSharedPreferences("LOGIN", MODE_PRIVATE);
+        int user = Integer.parseInt(pref.getString("Login_data", ""));
+        return user;
     }
-    public String getTargetLang() {
-        SharedPreferences pref = getSharedPreferences("Translator", MODE_PRIVATE);
-        return pref.getString("targetlang", "");
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getMyData(idx);
     }
 }

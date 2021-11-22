@@ -1,6 +1,6 @@
 package com.example.hellochat.Interface;
 
-import com.example.hellochat.DTO.LoginData;
+import com.example.hellochat.DTO.Login.LoginData;
 import com.example.hellochat.DTO.TargetLangData;
 
 import retrofit2.Call;
