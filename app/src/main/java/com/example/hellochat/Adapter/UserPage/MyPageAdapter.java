@@ -16,9 +16,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.hellochat.Adapter.Feed.FeedCommentAdapter;
 import com.example.hellochat.Adapter.Image.BigImageAdapter;
 import com.example.hellochat.Adapter.Image.ImageAdapter;
 import com.example.hellochat.DTO.UserPage.MypageData;
@@ -201,6 +203,12 @@ public class MyPageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         .load(imageUrl)
                         .into(contentsViewHolder.profile);
             }
+            if(mData.get(position).comment != null){
+                contentsViewHolder.comment_recycler.setAdapter(new FeedCommentAdapter(mData.get(position).comment));
+                contentsViewHolder.comment_recycler.setLayoutManager(new LinearLayoutManager(c));
+            }else {
+                contentsViewHolder.comment_recycler.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -244,7 +252,6 @@ public class MyPageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             this.following_cnt = itemView.findViewById(R.id.following_cnt);
             this.follower = itemView.findViewById(R.id.follower);
             this.following = itemView.findViewById(R.id.following);
-
 
             follower.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -291,6 +298,7 @@ public class MyPageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         protected ConstraintLayout player;
         protected SeekBar seekBar;
         protected RecyclerView image;
+        RecyclerView comment_recycler;
 
         public ContentsViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -322,6 +330,7 @@ public class MyPageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             this.player_control = itemView.findViewById(R.id.player_control);
             this.seekBar = itemView.findViewById(R.id.SeekBar);
             this.image = itemView.findViewById(R.id.image_recyclerview);
+            this.comment_recycler = itemView.findViewById(R.id.comment_recycler);
 
             contents.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override

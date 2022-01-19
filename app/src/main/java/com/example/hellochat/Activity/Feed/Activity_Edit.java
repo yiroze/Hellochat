@@ -70,7 +70,7 @@ import retrofit2.Response;
 
 public class Activity_Edit extends AppCompatActivity {
     EditText content;
-    ImageView back, edit, record_bnt, play_control , record_cancel , image, voice;
+    ImageView back, edit, record_bnt, play_control, record_cancel, image, voice;
     String TAG = this.getClass().getName();
     Button save, reset;
     RecyclerView recyclerView;
@@ -82,7 +82,7 @@ public class Activity_Edit extends AppCompatActivity {
     private File tempFile;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200, MESSAGE_RECORD_TIMER = 100, MESSAGE_RECORD_START = 103, MESSAGE_PLAYER_TIMER = 101, MESSAGE_PLAYER_START = 102;
     ConstraintLayout voice_layout, player_layout;
-    boolean isRecording, isPlaying, RecordState , RecordDataState  =false ;
+    boolean isRecording, isPlaying, RecordState, RecordDataState = false;
     MediaRecorder recorder;
     MediaPlayer mPlayer;
     AppCompatSeekBar seekbar;
@@ -104,7 +104,9 @@ public class Activity_Edit extends AppCompatActivity {
         SharedPreferences pref = getSharedPreferences("LOGIN", MODE_PRIVATE);
         user_index = pref.getString("Login_data", "");
         final InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-
+        back.setOnClickListener(v -> {
+            finish();
+        });
         image.setOnClickListener(v -> {
             verifyStoragePermissions(this);
             Intent intent = new Intent(Intent.ACTION_PICK);
@@ -134,7 +136,7 @@ public class Activity_Edit extends AppCompatActivity {
         NewsfeedApi service = RetrofitClientInstance.getRetrofitInstance().create(NewsfeedApi.class);
         edit.setOnClickListener(v -> {
             upload_Image();
-            if(RecordDataState){
+            if (RecordDataState) {
                 upload_Record();
             }
             Log.d(TAG, "에딧클릭");
@@ -160,7 +162,7 @@ public class Activity_Edit extends AppCompatActivity {
                                 Intent intent = new Intent(Activity_Edit.this, ClientService.class);
                                 JSONObject jsonObject = new JSONObject();
                                 try {
-                                    jsonObject.put("content", result.idx );
+                                    jsonObject.put("content", result.idx);
                                     jsonObject.put("accept_user_idx", 0);
                                     jsonObject.put("content_type", 9);
                                 } catch (JSONException e) {
@@ -326,10 +328,10 @@ public class Activity_Edit extends AppCompatActivity {
                         //초과선택
                         Toast.makeText(getApplicationContext(), "사진은 9장 까지 선택가능합니다", Toast.LENGTH_LONG).show();
                     } else {
-                        if(uriList.size()+clipData.getItemCount()>9){
+                        if (uriList.size() + clipData.getItemCount() > 9) {
                             Toast.makeText(getApplicationContext(), "사진은 9장 까지 선택가능합니다", Toast.LENGTH_LONG).show();
-                            Log.d(TAG, "onActivityResult: "+uriList.size()+clipData.getItemCount());
-                        }else {
+                            Log.d(TAG, "onActivityResult: " + uriList.size() + clipData.getItemCount());
+                        } else {
                             for (int i = 0; i < clipData.getItemCount(); i++) {
                                 imageUri = clipData.getItemAt(i).getUri();
                                 try {
@@ -373,7 +375,7 @@ public class Activity_Edit extends AppCompatActivity {
         player_layout = (ConstraintLayout) findViewById(R.id.player_layout);
         save = (Button) findViewById(R.id.save);
         reset = (Button) findViewById(R.id.reset);
-        record_cancel= (ImageView)findViewById(R.id.record_cancel);
+        record_cancel = (ImageView) findViewById(R.id.record_cancel);
     }
 
     public void upload_Image() {
@@ -527,26 +529,27 @@ public class Activity_Edit extends AppCompatActivity {
 
                 case MESSAGE_PLAYER_TIMER:
                     removeMessages(MESSAGE_RECORD_TIMER);
-                    S2 -= 1;
-                    if (S2 == 0) {
-                        if (M2 == 0) {
-                            time.setText(M2 + ":" + String.format("%02d", S2));
-                            isPlaying = false;
-                            record_bnt.setImageResource(R.drawable.play);
-                            break;
-                        }
-                        M2 -= 1;
-                        S2 = 0;
-                    }
+                    S2 += 1;
                     time.setText(M2 + ":" + String.format("%02d", S2));
+                    if (M2 == M && S2 == S) {
+                        //총 시간에 도달했을때
+                        isPlaying = false;
+                        record_bnt.setImageResource(R.drawable.play);
+                        break;
+                    } else {
+                        if (S2 == 60) {
+                            M2 += 1;
+                            S2 = 0;
+                        }
+                    }
                     this.sendEmptyMessageDelayed(MESSAGE_PLAYER_TIMER, 1000);
                     Log.d(TAG, "handleMessage: 2");
 
                     break;
                 case MESSAGE_PLAYER_START:
                     removeMessages(MESSAGE_PLAYER_TIMER);
-                    S2 = S;
-                    M2 = M;
+                    S2 = 0;
+                    M2 = 0;
                     time.setText(M2 + ":" + String.format("%02d", S2));
                     Log.d(TAG, "handleMessage: 3");
                     this.sendEmptyMessageDelayed(MESSAGE_PLAYER_TIMER, 1000);
@@ -670,6 +673,7 @@ public class Activity_Edit extends AppCompatActivity {
                 Log.d(TAG, "onResponse: " + RecordDataPath);
                 Log.d(TAG, "onResponse: " + response.body());
             }
+
             @Override
             public void onFailure(Call<ResultData> call, Throwable t) {
                 Log.d(TAG, "onFailure: " + t.toString());

@@ -26,20 +26,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.hellochat.Activity.UserPage.Activity_MyDetail;
 import com.example.hellochat.Activity.Feed.Activity_Trans;
-import com.example.hellochat.Activity.UserPage.Activity_UserDetail;
 import com.example.hellochat.Activity.Feed.Activity_modify;
+import com.example.hellochat.Activity.UserPage.Activity_MyDetail;
+import com.example.hellochat.Activity.UserPage.Activity_UserDetail;
 import com.example.hellochat.Adapter.Feed.NewsfeedAdapter;
-import com.example.hellochat.Service.ClientService;
-import com.example.hellochat.DTO.ResultData;
 import com.example.hellochat.DTO.Feed.ViewBoardData;
 import com.example.hellochat.DTO.Feed.ViewData;
+import com.example.hellochat.DTO.ResultData;
 import com.example.hellochat.Interface.NewsfeedApi;
 import com.example.hellochat.R;
 import com.example.hellochat.RetrofitClientInstance;
+import com.example.hellochat.Service.ClientService;
 import com.example.hellochat.Util.GetLanguageCode;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -156,10 +157,10 @@ public class Fragment_feed_new extends Fragment {
                             public boolean onMenuItemClick(MenuItem item) {
                                 switch (item.getItemId()) {
                                     case R.id.trans:
-                                        Log.d(TAG, "onMenuItemClick: "+ getTargetLang(contain));
+                                        Log.d(TAG, "onMenuItemClick: "+ getFirstTargetLang(contain));
                                         Intent intentTrans = new Intent(getActivity() , Activity_Trans.class);
                                         intentTrans.putExtra("content" , datainfo.get(position).contents);
-                                        intentTrans.putExtra("targetLang" , getTargetLang(contain));
+                                        intentTrans.putExtra("targetLang" , getFirstTargetLang(contain));
                                         startActivity(intentTrans);
                                         return true;
 
@@ -299,9 +300,16 @@ public class Fragment_feed_new extends Fragment {
         AlertDialog alertDialog = dia.create();
         alertDialog.show();
     }
-    public String getTargetLang(ViewGroup container) {
+    public String getFirstTargetLang(ViewGroup container){
         SharedPreferences pref = container.getContext().getSharedPreferences("Translator", MODE_PRIVATE);
-        return pref.getString("targetlang", "");
+        JSONArray JSON = null;
+        try {
+            JSON = new JSONArray(pref.getString("targetlang", ""));
+            return JSON.get(0).toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     public String getPref(ViewGroup container) {
         SharedPreferences pref = container.getContext().getSharedPreferences("LOGIN", MODE_PRIVATE);

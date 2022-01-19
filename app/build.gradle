@@ -71,6 +71,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:18.0.0'
     implementation 'com.google.android.gms:play-services-location:18.0.0'
     implementation 'gun0912.ted:tedpermission:2.2.0'
+    implementation 'com.opentok.android:opentok-android-sdk:2.19.1'
     implementation 'com.soundcloud.android:android-crop:1.0.1@aar'
+    implementation 'pub.devrel:easypermissions:3.0.0'
 
 }

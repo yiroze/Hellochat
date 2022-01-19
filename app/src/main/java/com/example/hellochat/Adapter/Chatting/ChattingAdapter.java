@@ -102,7 +102,6 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         Date before_date = new Date();
         Date after_date = new Date();
         date.setTime(Long.parseLong(mList.get(position).date));
-        Log.d(TAG, "onBindViewHolder: " + mList.get(position).checked);
 
         if (position != 0) {
             before_date.setTime(Long.parseLong(mList.get(position - 1).date));
@@ -110,7 +109,6 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (position + 1 != mList.size()) {
             after_date.setTime(Long.parseLong(mList.get(position + 1).date));
         }
-        Log.d(TAG, "onBindViewHolder: " + simpleDateFormat.format(date) + simpleDateFormat.format(before_date));
         //프로필사진과 이름
         //1. 바로 위의 메시지와 받는사람이 다르다.
         //2. 바로 위의 메시지와 시간이 다르다.
@@ -129,33 +127,10 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             } else {
                 viewHolder.checked.setVisibility(View.GONE);
             }
-//            if (position + 1 >= mList.size()) {
-//                viewHolder.date.setVisibility(View.VISIBLE);
-//            } else {
-//                after_date.setTime(Long.parseLong(mList.get(position + 1).date));
-//                if (mList.get(position).accept_idx != mList.get(position + 1).accept_idx || !simpleDateFormat.format(date).equals(simpleDateFormat.format(after_date))) {
-//                    viewHolder.date.setVisibility(View.VISIBLE);
-//                }
-//            }
         } else if (holder instanceof LeftViewHolder) {
             LeftViewHolder viewHolder = (LeftViewHolder) holder;
-
-//            if (position > 0) {
-//                if (mList.get(position - 1).accept_idx == mList.get(position).accept_idx && simpleDateFormat.format(date).equals(simpleDateFormat.format(before_date))) {
-//                    viewHolder.name.setVisibility(View.GONE);
-//                    viewHolder.profile.setVisibility(View.GONE);
-//                }
-//            }
-//            if (position + 1 >= mList.size()) {
-//                viewHolder.date.setVisibility(View.VISIBLE);
-//            } else {
-//                after_date.setTime(Long.parseLong(mList.get(position + 1).date));
-//                if (mList.get(position).accept_idx != mList.get(position + 1).accept_idx || !simpleDateFormat.format(date).equals(simpleDateFormat.format(after_date))) {
-//                    viewHolder.date.setVisibility(View.VISIBLE);
-//                }
-//            }
-            if (position > 0) {
-                if (mList.get(position - 1).accept_idx == mList.get(position).accept_idx) {
+            if (position < mList.size()-1) {
+                if (mList.get(position + 1).accept_idx == mList.get(position).accept_idx) {
                     viewHolder.name.setVisibility(View.GONE);
                     viewHolder.profile.setVisibility(View.GONE);
                 }
@@ -184,15 +159,6 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             } else {
                 viewHolder.checked.setVisibility(View.GONE);
             }
-//            if (position + 1 >= mList.size()) {
-//                viewHolder.date.setVisibility(View.VISIBLE);
-//            } else {
-//                after_date.setTime(Long.parseLong(mList.get(position + 1).date));
-//                if (mList.get(position).accept_idx != mList.get(position + 1).accept_idx || !simpleDateFormat.format(date).equals(simpleDateFormat.format(after_date))) {
-//                    viewHolder.date.setVisibility(View.VISIBLE);
-//                }
-//            }
-
             String a = mList.get(position).content.replace("[", "").replace("]", "").replace(" ", "");
             String[] item = a.split(",");
             ArrayList<String> image_item = new ArrayList<>(Arrays.asList(item));
@@ -220,14 +186,6 @@ public class ChattingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     viewHolder.profile.setVisibility(View.GONE);
                 }
             }
-//            if (position + 1 >= mList.size()) {
-//                viewHolder.date.setVisibility(View.VISIBLE);
-//            } else {
-//                after_date.setTime(Long.parseLong(mList.get(position + 1).date));
-//                if (mList.get(position).accept_idx != mList.get(position + 1).accept_idx || !simpleDateFormat.format(date).equals(simpleDateFormat.format(after_date))) {
-//                    viewHolder.date.setVisibility(View.VISIBLE);
-//                }
-//            }
             if (mList.get(position).profile != null && !mList.get(position).profile.equals("")) {
                 String imageUrl = "http://3.37.204.197/hellochat/" + mList.get(position).profile;
                 //영상 썸네일 세팅

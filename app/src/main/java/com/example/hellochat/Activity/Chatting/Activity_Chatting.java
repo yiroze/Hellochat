@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.se.omapi.Session;
 import android.util.Log;
 import android.webkit.URLUtil;
 import android.widget.EditText;
@@ -32,15 +33,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hellochat.Adapter.Chatting.ChattingAdapter;
-import com.example.hellochat.Interface.ChatApi;
-import com.example.hellochat.Service.ClientService;
 import com.example.hellochat.DTO.Chatting.ChatData;
 import com.example.hellochat.DTO.Chatting.Chatting;
 import com.example.hellochat.DTO.Feed.UploadResult;
+import com.example.hellochat.Interface.ChatApi;
 import com.example.hellochat.Interface.JoinApi;
 import com.example.hellochat.R;
 import com.example.hellochat.RetrofitClientInstance;
+import com.example.hellochat.Service.ClientService;
 import com.example.hellochat.SoftKeyboardDectectorView;
+import com.example.hellochat.Util.OpenTokConfig;
 import com.example.hellochat.webRTC.CallActivity;
 
 import org.jetbrains.annotations.NotNull;
@@ -81,7 +83,9 @@ public class Activity_Chatting extends AppCompatActivity {
     int page = 1, limit = 20;
     boolean is_last_position = true;
     int position;
+    int lastposition;
     int GALLARY = 3000;
+
 
 
     private SharedPreferences sharedPref;
@@ -95,7 +99,7 @@ public class Activity_Chatting extends AppCompatActivity {
     private String keyprefRoom;
     private String keyprefRoomList;
     private static final int CONNECTION_REQUEST = 1;
-
+    boolean loading;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,10 +127,9 @@ public class Activity_Chatting extends AppCompatActivity {
         service_intent.putExtra("user_idx", user);
         startService(service_intent);
         name.setText(getIntent.getStringExtra("user_name"));
-        setAdapter(getPref(), user);
+        setAdapter(getPref(), user, page, limit);
         back.setOnClickListener(v -> {
-            Log.d(TAG, "onCreate: " + mRecyclerView + " " + (mData.size() - 1) + " ");
-            mRecyclerView.scrollToPosition(mData.size() - 1);
+            finish();
         });
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -138,14 +141,25 @@ public class Activity_Chatting extends AppCompatActivity {
                 int firstVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
                 is_last_position = false;
                 position = lastVisibleItemPosition;
-                Log.d(TAG, "onScrolled: " + is_last_position + " position == " + lastVisibleItemPosition);
+                lastposition= firstVisibleItemPosition;
+                Log.d(TAG, "onScrolled: " + is_last_position + " lastposition == " + lastposition);
                 if (lastVisibleItemPosition == itemTotalCount) {
-                    is_last_position = true;
                     Log.d(TAG, "last Position..." + itemTotalCount + is_last_position);
+                    if (loading) {
+                        loading = false;
+                        page++;
+                        setAdapter(getPref(), user, page, limit);
+                    } else {
+                        Handler mHandler = new Handler();
+                        mHandler.postDelayed(new Runnable() {
+                            public void run() {
+                                loading = true;
+                            }
+                        }, 1000); //1 초후
+                    }
                 } else if (firstVisibleItemPosition == 0) {
-                    page++;
-                    Log.d(TAG, "Position=5" + page);
-
+                    is_last_position = true;
+                    Log.d(TAG, "onScrolled: " + firstVisibleItemPosition);
                 }
             }
         });
@@ -184,35 +198,23 @@ public class Activity_Chatting extends AppCompatActivity {
             @Override
             public void onShowSoftKeyboard() {
                 //키보드 등장할 때
-                Log.d(TAG, "onShowSoftKeyboard: ");
-                if (is_last_position) {
-                    Log.d(TAG, "onShowSoftKeyboard: " + (mData.size() - 1));
-                    mRecyclerView.scrollToPosition(mData.size() - 1);
-                } else if (position == mData.size() - 2) {
-                    mRecyclerView.scrollToPosition(mData.size() - 1);
+                if(lastposition == 7 || lastposition == 6){
+                    mRecyclerView.scrollToPosition(0);
                 }
             }
         });
         softKeyboardDecector.setOnHiddenKeyboard(new SoftKeyboardDectectorView.OnHiddenKeyboardListener() {
-
             @Override
             public void onHiddenSoftKeyboard() {
                 // 키보드 사라질 때
-                Log.d(TAG, "onHiddenSoftKeyboard: ");
-                if (is_last_position) {
-                    Log.d(TAG, "onHiddenSoftKeyboard: " + (mData.size() - 1));
-                    mRecyclerView.scrollToPosition(mData.size() - 1);
-                } else if (position == mData.size() - 2
-
-                ) {
-                    mRecyclerView.scrollToPosition(mData.size() - 1);
-                }
             }
         });
         set_check(user);
         call.setOnClickListener(v -> {
-//            Intent intent = new Intent(Activity_Chatting.this , ConnectActivity.class);
-//            startActivity(intent);
+
+            Intent vonageConn = new Intent(Activity_Chatting.this , ClientService.class );
+
+
             String roomID = getRandomNumber();
             Intent intent = new Intent(Activity_Chatting.this, ClientService.class);
             JSONObject jsonObject = new JSONObject();
@@ -227,33 +229,62 @@ public class Activity_Chatting extends AppCompatActivity {
             startService(intent);
             connectToRoom(roomID, false, false, false, 0);
         });
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        setAdapter(getPref(), user);
     }
+//
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        setAdapter(getPref(), user, page, limit);
+//    }
 
-    public void initAdapter(int myidx, int user_idx, Boolean is_send) {
+    public void initAdapter(int myidx, int user_idx, Boolean is_send, int page, int limit) {
         Log.d(TAG, "initAdapter: " + myidx + " " + user_idx);
         ChatApi service = RetrofitClientInstance.getRetrofitInstance().create(ChatApi.class);
-        Call<ChatData> call = service.getChatting(myidx, user_idx);
+        Call<ChatData> call = service.getChatting2(myidx, user_idx, page, limit);
         call.enqueue(new Callback<ChatData>() {
             @Override
             public void onResponse(Call<ChatData> call, Response<ChatData> response) {
-                Log.d(TAG, "onResponse: " + response.body());
                 resultData = response.body();
                 mData = resultData.body;
-                recyclerViewState = mRecyclerView.getLayoutManager().onSaveInstanceState();
+                Log.d(TAG, "onResponse: " + mData.toString());
                 mAdapter = new ChattingAdapter(mData, getPref());
                 mRecyclerView.setAdapter(mAdapter);
-                mRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
-                Log.d(TAG, "onResponse: " + (mData.size() - 1));
                 if (is_send) {
-                    Log.d(TAG, "onResponse: " + (mData.size() - 1));
-                    mRecyclerView.scrollToPosition(mData.size() - 1);
+                    mRecyclerView.scrollToPosition(0);
+                } else {
+                    if(is_last_position){
+                        mRecyclerView.scrollToPosition(0);
+                    }else {
+                        mRecyclerView.scrollToPosition(position + 1);
+                    }
                 }
+//                recyclerViewState = mRecyclerView.getLayoutManager().onSaveInstanceState();
+
+//                Log.d(TAG, "onResponse: " + response.body());
+//                resultData = response.body();
+//                mData = resultData.body;
+//                recyclerViewState = mRecyclerView.getLayoutManager().onSaveInstanceState();
+//                mAdapter = new ChattingAdapter(mData, getPref());
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (is_send) {
+//                            mRecyclerView.scrollToPosition(mData.size()-1);
+//                        }else {
+//                            if(is_last_position){
+//                                mRecyclerView.scrollToPosition(0);
+//                            }else {
+//                                mRecyclerView.scrollToPosition(position);
+//                            }
+//                        }
+//                    }
+//                }, 50);
+//                mRecyclerView.setAdapter(mAdapter);
+////                mRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+//                Log.d(TAG, "onResponse: " + (lastposition));
+
+
             }
 
             @Override
@@ -263,10 +294,10 @@ public class Activity_Chatting extends AppCompatActivity {
         });
     }
 
-    public void setAdapter(int myidx, int user_idx) {
+    public void setAdapter(int myidx, int user_idx, int page, int limit) {
         Log.d(TAG, "initAdapter: " + myidx + " " + user_idx);
         ChatApi service = RetrofitClientInstance.getRetrofitInstance().create(ChatApi.class);
-        Call<ChatData> call = service.getChatting(myidx, user_idx);
+        Call<ChatData> call = service.getChatting(myidx, user_idx, page, limit);
         call.enqueue(new Callback<ChatData>() {
             @Override
             public void onResponse(Call<ChatData> call, Response<ChatData> response) {
@@ -276,14 +307,9 @@ public class Activity_Chatting extends AppCompatActivity {
                 recyclerViewState = mRecyclerView.getLayoutManager().onSaveInstanceState();
                 mAdapter = new ChattingAdapter(mData, getPref());
                 mRecyclerView.setAdapter(mAdapter);
+                mRecyclerView.scrollToPosition(position);
                 mAdapter.notifyDataSetChanged();
-                mRecyclerView.scrollToPosition(mData.size() - 1);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mRecyclerView.scrollToPosition(mData.size() - 1);
-                    }
-                }, 50);
+
             }
 
             @Override
@@ -300,9 +326,9 @@ public class Activity_Chatting extends AppCompatActivity {
         Log.d(TAG, "onNewIntent: " + intent.getBooleanExtra("send_result", false));
         //받은데이터인지 보낸데이터인지 구분
         if (intent.getBooleanExtra("send_result", false)) {
-            initAdapter(getPref(), user, intent.getBooleanExtra("send_result", false));
+            initAdapter(getPref(), user, intent.getBooleanExtra("send_result", false), page, limit);
         } else {
-            initAdapter(getPref(), user, is_last_position);
+            initAdapter(getPref(), user, is_last_position, page, limit);
         }
 
     }
@@ -320,8 +346,9 @@ public class Activity_Chatting extends AppCompatActivity {
         name = findViewById(R.id.name);
         mRecyclerView = findViewById(R.id.chat_list_recycler);
         back = findViewById(R.id.back);
-        LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
+        final LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
         mLinearLayoutManager.setStackFromEnd(true);
+        mLinearLayoutManager.setReverseLayout(true);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         image = findViewById(R.id.add_image);
         call = findViewById(R.id.call);

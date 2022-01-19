@@ -24,29 +24,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:weightSum="10">
+                <!--                    android:background="@drawable/search_back"-->
                 <LinearLayout
-                    android:background="@drawable/search_back"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:layout_weight="7.3">
-                    <ImageView
-                        android:src="@drawable/search"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_gravity="center_vertical"
-                        />
 
-                    <TextView
-                        android:text="게시물 검색"
-                        android:textColor="#858585"
-                        android:layout_marginLeft="12dp"
-                        android:textSize="16dp"
-                        android:layout_gravity="center_vertical"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+<!--                    <ImageView-->
+<!--                        android:src="@drawable/search"-->
+<!--                        android:layout_width="25dp"-->
+<!--                        android:layout_height="25dp"-->
+<!--                        android:layout_marginLeft="16dp"-->
+<!--                        android:layout_gravity="center_vertical"-->
+<!--                        />-->
+
+<!--                    <TextView-->
+<!--                        android:text="게시물 검색"-->
+<!--                        android:textColor="#858585"-->
+<!--                        android:layout_marginLeft="12dp"-->
+<!--                        android:textSize="16dp"-->
+<!--                        android:layout_gravity="center_vertical"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"/>-->
 
 
                 </LinearLayout>

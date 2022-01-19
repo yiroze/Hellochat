@@ -3,12 +3,14 @@ package com.example.hellochat.Interface;
 import com.example.hellochat.DTO.Feed.CommentData;
 import com.example.hellochat.DTO.Feed.DetailResult;
 import com.example.hellochat.DTO.Feed.EditData;
-import com.example.hellochat.DTO.UserPage.FollowResult;
 import com.example.hellochat.DTO.Feed.GetContents;
 import com.example.hellochat.DTO.Feed.NotificationCount;
 import com.example.hellochat.DTO.Feed.NotificationResult;
-import com.example.hellochat.DTO.ResultData;
+import com.example.hellochat.DTO.Feed.ReplyData;
+import com.example.hellochat.DTO.Feed.ReplyResult;
 import com.example.hellochat.DTO.Feed.ViewBoardData;
+import com.example.hellochat.DTO.ResultData;
+import com.example.hellochat.DTO.UserPage.FollowResult;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -91,8 +93,17 @@ public interface NewsfeedApi {
     );
 
     @FormUrlEncoded
-    @POST("detail_api.php")
+    @POST("detail_api_test.php")
     Call<DetailResult> get_detail(
+            @Field("feed_idx") int feed_idx,
+            @Field("user_idx") int user_idx,
+            @Field("page") int page,
+            @Field("limit") int limit
+    );
+
+    @FormUrlEncoded
+    @POST("detail_paging.php")
+    Call<DetailResult> get_detailPaging(
             @Field("feed_idx") int feed_idx,
             @Field("user_idx") int user_idx,
             @Field("page") int page,
@@ -178,4 +189,22 @@ public interface NewsfeedApi {
     Call<ResultData> set_check_notification(
             @Field("my_idx") int my_idx
     );
+
+    @FormUrlEncoded
+    @POST("get_reply.php")
+    Call<ReplyResult> getReply(
+            @Field("comment_idx") int comment_idx
+    );
+
+    @FormUrlEncoded
+    @POST("set_reply.php")
+    Call<ReplyData> setReply(
+            @Field("parent") int comment_idx,
+            @Field("feednum") int feednum,
+            @Field("user_idx") int user_idx,
+            @Field("contents") String contents,
+            @Field("record") String record
+    );
+
+
 }

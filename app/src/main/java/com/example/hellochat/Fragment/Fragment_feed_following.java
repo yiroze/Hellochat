@@ -42,6 +42,7 @@ import com.example.hellochat.RetrofitClientInstance;
 import com.example.hellochat.Util.GetLanguageCode;
 import com.google.android.gms.maps.model.LatLng;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -194,10 +195,10 @@ public class Fragment_feed_following extends Fragment {
                             public boolean onMenuItemClick(MenuItem item) {
                                 switch (item.getItemId()) {
                                     case R.id.trans:
-                                        Log.d(TAG, "onMenuItemClick: "+ getTargetLang(contain));
+                                        Log.d(TAG, "onMenuItemClick: "+ getFirstTargetLang(contain));
                                         Intent intentTrans = new Intent(getActivity() , Activity_Trans.class);
                                         intentTrans.putExtra("content" , datainfo.get(position).contents);
-                                        intentTrans.putExtra("targetLang" , getTargetLang(contain));
+                                        intentTrans.putExtra("targetLang" , getFirstTargetLang(contain));
                                         startActivity(intentTrans);
                                         return true;
 
@@ -345,9 +346,16 @@ public class Fragment_feed_following extends Fragment {
         return pref.getString("Login_data", "");
     }
 
-    public String getTargetLang(ViewGroup container) {
+    public String getFirstTargetLang(ViewGroup container){
         SharedPreferences pref = container.getContext().getSharedPreferences("Translator", MODE_PRIVATE);
-        return pref.getString("targetlang", "");
+        JSONArray JSON = null;
+        try {
+            JSON = new JSONArray(pref.getString("targetlang", ""));
+            return JSON.get(0).toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
 

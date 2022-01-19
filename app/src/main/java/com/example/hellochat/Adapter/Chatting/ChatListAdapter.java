@@ -22,6 +22,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static java.lang.String.format;
+
 
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHolder> {
     private static final String TAG = "ChatListAdapter";
@@ -49,10 +51,10 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         date.setTime(mList.get(position).date);
         holder.name.setText(mList.get(position).name);
         holder.date.setText(simpleDateFormat.format(date));
-        if(mList.get(position).new_msg_cnt != 0){
+        if (mList.get(position).new_msg_cnt != 0) {
             holder.new_msg_cnt.setVisibility(View.VISIBLE);
             holder.new_msg_cnt.setText(Integer.toString(mList.get(position).new_msg_cnt));
-            Log.d(TAG, "onBindViewHolder: "+mList.get(position).new_msg_cnt);
+            Log.d(TAG, "onBindViewHolder: " + mList.get(position).new_msg_cnt);
         }
         if (mList.get(position).profile != null && !mList.get(position).profile.equals("")) {
             String imageUrl = "http://3.37.204.197/hellochat/" + mList.get(position).profile;
@@ -60,21 +62,25 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
                     .load(imageUrl)
                     .into(holder.profile);
         }
-        if(mList.get(position).content_type >=4){
-            if(mList.get(position).content_type==4){
+        if (mList.get(position).content_type >= 4) {
+            if (mList.get(position).content_type == 4) {
                 holder.content.setText("영상통화");
-            }else if(mList.get(position).content_type==5){
+            } else if (mList.get(position).content_type == 5) {
                 holder.content.setText("응답거부");
-            }else if(mList.get(position).content_type==6){
+            } else if (mList.get(position).content_type == 6) {
                 holder.content.setText("취소");
-            }else if(mList.get(position).content_type==8){
-                if(mList.get(position).content.equals("0")){
+            } else if (mList.get(position).content_type == 8) {
+                if (mList.get(position).content.equals("0")) {
                     holder.content.setText("취소");
-                }else{
+                } else {
                     holder.content.setText(new StringBuilder().append("영상통화 ").append(util.secToText(Integer.parseInt(mList.get(position).content))).toString());
                 }
             }
-        }else {
+        } else if (mList.get(position).content_type == 2) {
+            String[] image = mList.get(position).content.replace("[", "").replace("]" , "").split(",");
+            holder.content.setText(format("사진 %d개", image.length));
+
+        } else {
             holder.content.setText(mList.get(position).content);
         }
     }
@@ -86,15 +92,19 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
     }
 
     private OnChatListClick mListener = null;
+
     public interface OnChatListClick {
         void onChatListClick(View v, int pos);
     }
+
     public void setonChatListClick(OnChatListClick listener) {
         this.mListener = listener;
     }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
-        protected TextView content, date, name , new_msg_cnt ;
+        protected TextView content, date, name, new_msg_cnt;
         protected ImageView profile;
+
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             content = itemView.findViewById(R.id.content);
@@ -106,8 +116,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
             itemView.setOnClickListener(v -> {
                 int pos = getAdapterPosition();
                 if (pos != RecyclerView.NO_POSITION) {
-                    if(mListener != null){
-                        mListener.onChatListClick(v , pos);
+                    if (mListener != null) {
+                        mListener.onChatListClick(v, pos);
                     }
                 }
             });

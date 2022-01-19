@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+fromXDelta, toXDelta: X 방향 이동
+duration: 애니메이션이 얼마나 지속될 지 시간을 지정하는 속성
+repeatCount: 애니메이션의 반복 횟수
+fillAfter: 애니메이션 동작이 끝난 후에 원래의 모양대로 화면에 보여줄 것인지를 지정
+1.5초 동안 뷰가 오른쪽에서 뷰의 원래 위치로 이동
+-->
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <translate
+        android:fromYDelta="0%p"
+        android:toYDelta="100%p"
+        android:duration="1500"
+        android:repeatCount="0"
+        android:fillAfter="true"/>
+</set>

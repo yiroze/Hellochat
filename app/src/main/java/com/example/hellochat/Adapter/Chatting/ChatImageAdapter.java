@@ -68,7 +68,7 @@ public class ChatImageAdapter extends RecyclerView.Adapter<ChatImageAdapter.View
         if (mData.size() > 9) {
             if (position == 8) {
                 holder.total_cnt.setVisibility(View.VISIBLE);
-                holder.total_cnt.setText(new StringBuilder().append("+").append(mData.size()).toString());
+                holder.total_cnt.setText(new StringBuilder().append("+").append((mData.size())-9).toString());
             }
             if (position > 8) {
                 holder.imageView.setVisibility(View.GONE);

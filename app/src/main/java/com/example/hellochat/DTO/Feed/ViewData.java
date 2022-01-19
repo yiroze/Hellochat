@@ -1,7 +1,5 @@
 package com.example.hellochat.DTO.Feed;
 
-import android.net.Uri;
-
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -71,6 +69,8 @@ ViewData {
     @SerializedName("record")
     public String record;
 
+    @SerializedName("comment")
+    public ArrayList<ReplyList> comment;
 
     @Override
     public String toString() {
@@ -95,7 +95,7 @@ ViewData {
                 ", islike=" + islike +
                 ", image='" + image + '\'' +
                 ", record='" + record + '\'' +
+                ", comment=" + comment +
                 '}';
     }
-
 }

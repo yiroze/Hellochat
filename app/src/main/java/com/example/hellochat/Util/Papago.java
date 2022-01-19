@@ -39,7 +39,7 @@ public class Papago {
         requestHeaders.put("X-Naver-Client-Id", clientId);
         requestHeaders.put("X-Naver-Client-Secret", clientSecret);
         Log.d(TAG, "trans:타겟언어 "+targetLangCode);
-        Log.d(TAG, "trans:소스언어 "+getLanguageCode(Text));
+        Log.d(TAG, "trans:소스언어 "+getLanguageCode(content));
         String responseBody = transText(apiURL, requestHeaders, Text , targetLangCode , getLanguageCode(content));
         return responseBody;
     }

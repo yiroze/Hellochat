@@ -36,7 +36,7 @@ public class Util {
             case "English":
                 return "en";
             case "Chinese":
-                return "zh-cn";
+                return "zh-CN";
             case "Hindi":
                 return "hi";
             case "French":
@@ -46,7 +46,7 @@ public class Util {
             case "Spanish":
                 return "es";
             case "Arabic":
-                return "v";
+                return "ar";
             case "Russian":
                 return "ru";
             case "German":
@@ -55,6 +55,33 @@ public class Util {
                 return "ja";
             case "Portuguese":
                 return "pt";
+        }
+        return null;
+    }
+    public String LangCodeToLanguage(String language) {
+        switch (language) {
+            case "ko":
+                return "Korean";
+            case "en":
+                return "English";
+            case "zh-CN":
+                return "Chinese";
+            case "fr":
+                return "French";
+            case "hi":
+                return "Hindi";
+            case "es":
+                return "Spanish";
+            case "ar":
+                return "Arabic";
+            case "ru":
+                return "Russian";
+            case "de":
+                return "German";
+            case "ja":
+                return "Japanese";
+            case "pt":
+                return "Portuguese";
         }
         return null;
     }

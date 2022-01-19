@@ -39,6 +39,7 @@ import com.example.hellochat.RetrofitClientInstance;
 import com.example.hellochat.Service.ClientService;
 import com.example.hellochat.Util.GetLanguageCode;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -81,7 +82,6 @@ public class Fragment_feed_around extends Fragment {
         idx = Integer.parseInt(getPref(container));
         Log.d(TAG, "onCreateView: " + idx);
         //Retrofit 인스턴스 생성
-        getdata(idx, page, limit);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(), mLinearLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
@@ -106,7 +106,6 @@ public class Fragment_feed_around extends Fragment {
             @Override
             public void onRefresh() {
                 Log.d(TAG, "onRefresh: 새로고침");
-                mAdapter.clear();
                 page = 1;
                 getdata(idx, page, limit);
                 refreshLayout.setRefreshing(false);
@@ -122,6 +121,7 @@ public class Fragment_feed_around extends Fragment {
         });
 
         Log.d(TAG, "onCreateView: ");
+        getdata(idx, page, limit);
 
         return view;
     }
@@ -161,10 +161,10 @@ public class Fragment_feed_around extends Fragment {
                             public boolean onMenuItemClick(MenuItem item) {
                                 switch (item.getItemId()) {
                                     case R.id.trans:
-                                        Log.d(TAG, "onMenuItemClick: "+ getTargetLang(contain));
+                                        Log.d(TAG, "onMenuItemClick: "+ getFirstTargetLang(contain));
                                         Intent intentTrans = new Intent(getActivity() , Activity_Trans.class);
                                         intentTrans.putExtra("content" , datainfo.get(position).contents);
-                                        intentTrans.putExtra("targetLang" , getTargetLang(contain));
+                                        intentTrans.putExtra("targetLang" , getFirstTargetLang(contain));
                                         startActivity(intentTrans);
                                         return true;
 
@@ -237,6 +237,7 @@ public class Fragment_feed_around extends Fragment {
             @Override
             public void onFailure(Call<ViewBoardData> call, Throwable t) {
                 Log.d(TAG, "onFailure: 통신실패" + t.getMessage());
+                progressBar.setVisibility(View.GONE);
             }
         });
 
@@ -312,9 +313,16 @@ public class Fragment_feed_around extends Fragment {
         return pref.getString("Login_data", "");
     }
 
-    public String getTargetLang(ViewGroup container) {
+    public String getFirstTargetLang(ViewGroup container){
         SharedPreferences pref = container.getContext().getSharedPreferences("Translator", MODE_PRIVATE);
-        return pref.getString("targetlang", "");
+        JSONArray JSON = null;
+        try {
+            JSON = new JSONArray(pref.getString("targetlang", ""));
+            return JSON.get(0).toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }

@@ -1,6 +1,9 @@
 package com.example.hellochat.DTO.UserPage;
 
+import com.example.hellochat.DTO.Feed.ReplyList;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
 
 public class MypageData {
 
@@ -82,6 +85,9 @@ public class MypageData {
     @SerializedName("image")
     public String image;
 
+    @SerializedName("comment")
+    public ArrayList<ReplyList> comment;
+
     @Override
     public String toString() {
         return "MypageData{" +
@@ -110,6 +116,7 @@ public class MypageData {
                 ", view_type=" + view_type +
                 ", record='" + record + '\'' +
                 ", image='" + image + '\'' +
+                ", comment=" + comment +
                 '}';
     }
 

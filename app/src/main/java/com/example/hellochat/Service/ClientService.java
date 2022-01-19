@@ -1,7 +1,9 @@
-package com.example.hellochat.Service;
+ package com.example.hellochat.Service;
 
 import android.app.ActivityManager;
 import android.app.AlarmManager;
+import android.app.Application;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,6 +14,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -19,7 +23,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,11 +33,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.hellochat.Activity.Chatting.Activity_Chatting;
-import com.example.hellochat.Activity.Feed.Activity_Detail;
 import com.example.hellochat.Activity.Chatting.Activity_Receive;
-import com.example.hellochat.AlarmReceiver;
+import com.example.hellochat.Activity.Feed.Activity_Detail;
 import com.example.hellochat.MainActivity;
 import com.example.hellochat.R;
+import com.example.hellochat.Recever.AlarmReceiver;
 import com.example.hellochat.webRTC.CallActivity;
 
 import org.jetbrains.annotations.NotNull;
@@ -44,23 +48,22 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class ClientService extends Service {
     private static final String TAG = "ClientService";
     private final static String SERVER_HOST = "3.37.204.197";
     private final static int SERVER_PORT = 5001;
-    public Socket mSocket = null;
-    SocketIntiThread socketIntiThread;
     private final static int SENDMESSAGE = 1;
     Handler subHandler;
     Handler handler;
-    static int state;
-    public static Intent serviceIntent;
+    public static Intent serviceIntent = null;
     ReadThread readThread;
-    RemoteViews contentView;
     private int notificationId;
+    private Thread mainThread;
 
     public ClientService() {
     }
@@ -79,19 +82,43 @@ public class ClientService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand: 서브핸들러 " + subHandler);
         if (intent.getStringExtra("msg") != null) {
+            if(serviceIntent !=null){
+                serviceIntent = intent;
+            }
+            //접속할때 서버에 보내는 메시지
             if (subHandler != null) {
                 Message resultMsg = Message.obtain();
                 resultMsg.what = SENDMESSAGE;
                 resultMsg.obj = intent.getStringExtra("msg");
                 subHandler.sendMessage(resultMsg);
             }
-        } else {
+        }//RestartService에서
+        else if(intent.getStringExtra("reconnection") != null){
+            if(serviceIntent !=null){
+                serviceIntent = intent;
+            }
+            mainThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    if (subHandler != null) {
+                        showToast(getApplication(), "Start Service");
+                        Message resultMsg = Message.obtain();
+                        resultMsg.what = SENDMESSAGE;
+                        resultMsg.obj = intent.getStringExtra("reconnection");
+                        subHandler.sendMessage(resultMsg);
+                    }
+                }
+            });
+            mainThread.start();
+        }
+        else {
             if (intent.getIntExtra("user_idx", -1) != -1) {
                 Message resultMsg = Message.obtain();
                 resultMsg.obj = intent.getIntExtra("user_idx", -1);
                 handler.sendMessage(resultMsg);
             }
         }
+
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -145,7 +172,7 @@ public class ClientService extends Service {
                     String user_name = jsonObject.getString("name");
                     int content_type = jsonObject.getInt("content_type");
                     String profile = null;
-                    if (content_type == 9 ||content_type == 11 ||content_type == 12 ) {
+                    if (content_type == 9 || content_type == 11 || content_type == 12) {
                         profile = jsonObject.getString("profile");
                     }
                     if (state_data == send_user_idx) {
@@ -272,7 +299,7 @@ public class ClientService extends Service {
                                 }
                             }
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            intent.putExtra("initChat" , true );
+                            intent.putExtra("initChat", true);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
                         }
@@ -283,6 +310,7 @@ public class ClientService extends Service {
             }
         }
     }
+
 
     class WriteThread extends Thread {
         DataOutputStream dataOutputStream;
@@ -316,8 +344,9 @@ public class ClientService extends Service {
                 jo.put("content", Content);
                 jo.put("accept_user_idx", accept_user_idx);
                 jo.put("content_type", content_type);
-                dataOutputStream.writeUTF(String.valueOf(jo));
-                Log.d(TAG, "WriteThread: 메시지 전송" + jo);
+//                dataOutputStream.writeUTF(String.valueOf(jo));
+                dataOutputStream.writeUTF(jo.toString());
+                Log.d(TAG, "WriteThread: 메시지 전송" + jo + mSocket);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
@@ -332,6 +361,7 @@ public class ClientService extends Service {
         String Content;
 
         public SocketIntiThread() {
+            Log.d(TAG, "SocketIntiThread: 시작!");
             subHandler = new Handler(Looper.myLooper()) {
                 @Override
                 public void handleMessage(@NonNull Message msg) {
@@ -339,15 +369,16 @@ public class ClientService extends Service {
                     //메시지를 받으면 쓰기쓰레드 시작
                     if (msg.what == SENDMESSAGE) {
                         Log.d(TAG, "handleMessage: 서브쓰레드에서 메시지 받음 , 소켓확인" + socket);
+                        Log.d(TAG, "handleMessage: 서브쓰레드에서 메시지 받음 , 메시지" + msg.obj.toString());
                         WriteThread writeThread = new WriteThread(socket, msg.obj.toString());
                         writeThread.start();
                     } else {
-                        try {
-                            socket.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        Log.d(TAG, "handleMessage: 서브쓰레드에서 메시지 받음 , 소켓확인" + socket);
+//                        try {
+//                            socket.close();
+//                            Log.d(TAG, "handleMessage:소켓닫기" + socket);
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
                     }
                 }
             };
@@ -438,7 +469,7 @@ public class ClientService extends Service {
                         bm[0] = resource;
                     }
                 });
-                Log.d(TAG, "feedNotification: "+bm[0]);
+                Log.d(TAG, "feedNotification: " + bm[0]);
                 nofityBuilder.setLargeIcon(bm[0]);
             } else {
                 nofityBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.no_profile));
@@ -470,24 +501,14 @@ public class ClientService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        serviceIntent = null;
+        setAlarmTimer();
 
-//        Log.d(TAG, "onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: ");
-//        serviceIntent = null;
-//
-//        final Calendar c = Calendar.getInstance();
-//        c.setTimeInMillis(System.currentTimeMillis());
-//        c.add(Calendar.SECOND, 2);
-//        Intent intent = new Intent(this, AlarmReceiver.class);
-//        PendingIntent sender = PendingIntent.getBroadcast(this, 0, intent, 0);
-//
-//        AlarmManager mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//        mAlarmManager.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), sender);
-//
-//        Thread.currentThread().interrupt();
-//        if (readThread != null) {
-//            readThread.interrupt();
-//            readThread = null;
-//        }
+        Thread.currentThread().interrupt();
+        if (readThread != null) {
+            readThread.interrupt();
+            readThread = null;
+        }
     }
 
     @Override
@@ -497,16 +518,49 @@ public class ClientService extends Service {
     }
 
     protected void setAlarmTimer() {
-        Log.d(TAG, "setAlarmTimer: setAlarmTimer: setAlarmTimer: setAlarmTimer: setAlarmTimer: setAlarmTimer: setAlarmTimer: setAlarmTimer: setAlarmTimer: setAlarmTimer: setAlarmTimer: setAlarmTimer: setAlarmTimer: ");
         final Calendar c = Calendar.getInstance();
         c.setTimeInMillis(System.currentTimeMillis());
-        c.add(Calendar.SECOND, 3);
+        c.add(Calendar.SECOND, 1);
         Intent intent = new Intent(this, AlarmReceiver.class);
         PendingIntent sender = PendingIntent.getBroadcast(this, 0, intent, 0);
-
-        AlarmManager mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        AlarmManager mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         mAlarmManager.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), sender);
     }
+    public void showToast(final Application application, final String msg) {
+        Handler h = new Handler(application.getMainLooper());
+        h.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(application, msg, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+    private void sendNotification(String messageBody) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent, PendingIntent.FLAG_ONE_SHOT);
 
+        String channelId = "fcm_default_channel";//getString(R.string.default_notification_channel_id);
+        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this, channelId)
+                        .setSmallIcon(R.mipmap.ic_launcher)//drawable.splash)
+                        .setContentTitle("Service test")
+                        .setContentText(messageBody)
+                        .setAutoCancel(true)
+                        .setSound(defaultSoundUri)
+                        .setPriority(Notification.PRIORITY_HIGH)
+                        .setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // Since android Oreo notification channel is needed.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(channelId,"Channel human readable title", NotificationManager.IMPORTANCE_DEFAULT);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+    }
 }
 

@@ -15,9 +15,20 @@ public interface ChatApi {
     @POST("chatting.php")
     Call<ChatData> getChatting(
             @Field("my_idx") int my_idx,
-            @Field("user_idx") int user_idx
-    );
+            @Field("user_idx") int user_idx,
+            @Field("page") int page,
+            @Field("limit") int limit
 
+    );
+    @FormUrlEncoded
+    @POST("chatting2.php")
+    Call<ChatData> getChatting2(
+            @Field("my_idx") int my_idx,
+            @Field("user_idx") int user_idx,
+            @Field("page") int page,
+            @Field("limit") int limit
+
+    );
 
     @FormUrlEncoded
     @POST("chat_list.php")

@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -23,9 +24,22 @@ import org.json.JSONObject;
 public class RestartService extends Service {
     private static final String TAG = "RestartService";
 
+    public RestartService(){
+
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "onStartCommand:onStartCommand:onStartCommand:onStartCommand:onStartCommand:onStartCommand:onStartCommand:onStartCommand:onStartCommand:onStartCommand:onStartCommand:onStartCommand:onStartCommand: ");
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "default");
         builder.setSmallIcon(R.drawable.ic_launcher_foreground);
         builder.setContentTitle(null);
@@ -43,17 +57,15 @@ public class RestartService extends Service {
         startForeground(9, notification);
 
         /////////////////////////////////////////////////////////////////////
-        Intent in = new Intent(this, ClientService.class);
         JSONObject jo = new JSONObject();
         try {
             jo.put("user_idx" , Integer.parseInt(getPref()));
-            jo.put("accept_user_idx" , Integer.parseInt(getPref()));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        in.putExtra("msg", jo.toString());
+        Intent in = new Intent(this, ClientService.class);
+        in.putExtra("reconnection" , jo.toString());
         startService(in);
-
         stopForeground(true);
         stopSelf();
         return START_NOT_STICKY;
@@ -67,4 +79,10 @@ public class RestartService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        return super.onUnbind(intent);
+    }
+
 }

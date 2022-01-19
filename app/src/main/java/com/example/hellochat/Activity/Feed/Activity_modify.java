@@ -323,10 +323,7 @@ public class Activity_modify extends AppCompatActivity {
         });
 
         back.setOnClickListener(v -> {
-            for (int i = 0; i < uriList.size(); i++) {
-                Log.e(TAG, "onCreate: " + uriList.get(i));
-            }
-            Log.e(TAG, "onCreate: " + tmp_name_list.toString());
+            finish();
         });
 
     }

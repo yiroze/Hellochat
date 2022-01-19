@@ -5,10 +5,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -24,6 +27,7 @@ import com.example.hellochat.Service.ClientService;
 import com.example.hellochat.Util.Util;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,6 +40,10 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    //죽지않는 서비스
+    private Intent serviceIntent;
+
+
     BottomNavigationView bottomNavigationView;
     String TAG = this.getClass().getName();
     Fragment_chat fragment_chat;
@@ -43,10 +51,11 @@ public class MainActivity extends AppCompatActivity {
     Fragment_newsfeed fragment_newsfeed;
     public static MainActivity activity = null;    //액티비티 변수 선언
     String idx;
-    private Intent serviceIntent;
     private static final int PERMISSION_REQUEST = 2;
     Util util = new Util();
-
+    private long backKeyPressedTime = 0;
+    // 첫 번째 뒤로가기 버튼을 누를때 표시
+    private Toast toast;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,11 +68,16 @@ public class MainActivity extends AppCompatActivity {
         fragment_mypage = new Fragment_mypage();
         Intent intent = getIntent();
         idx = intent.getStringExtra("idx");
-        Log.d(TAG, "onCreate: "+idx);
-        SharedPreferences pref = getSharedPreferences("LOGIN", MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putString("Login_data" , idx);
-        editor.apply();
+        if (idx != null && !idx.equals("")) {
+            Log.d(TAG, "onCreate: "+idx);
+            SharedPreferences pref = getSharedPreferences("LOGIN", MODE_PRIVATE);
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putString("Login_data" , idx);
+            editor.apply();
+        }else {
+            SharedPreferences pref = getSharedPreferences("LOGIN", MODE_PRIVATE);
+            idx =  pref.getString("Login_data" , "");
+        }
         setTargetLanguage(idx);
 
 
@@ -158,21 +172,37 @@ public class MainActivity extends AppCompatActivity {
             return true;
           }
         });
+
+
+        //죽지않는서비스
+        PowerManager pm = (PowerManager) getApplicationContext().getSystemService(POWER_SERVICE);
+        boolean isWhiteListing = false;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            isWhiteListing = pm.isIgnoringBatteryOptimizations(getApplicationContext().getPackageName());
+        }
+        if (!isWhiteListing) {
+            Intent intent1 = new Intent();
+            intent1.setAction(android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+            intent1.setData(Uri.parse("package:" + getApplicationContext().getPackageName()));
+            startActivity(intent1);
+        }
         JSONObject jo = new JSONObject();
         try {
             jo.put("user_idx" , Integer.parseInt(idx));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        if(ClientService.serviceIntent == null){
+        if (ClientService.serviceIntent==null) {
+            Log.d(TAG, "onCreate: 서비스시작!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             serviceIntent = new Intent(this, ClientService.class);
-            serviceIntent.putExtra("msg", jo.toString());
+            serviceIntent.putExtra("reconnection", jo.toString());
             startService(serviceIntent);
-        }else {
-            serviceIntent = ClientService.serviceIntent;
+        } else {
+            serviceIntent = ClientService.serviceIntent;//getInstance().getApplication();
+            Toast.makeText(getApplicationContext(), "already", Toast.LENGTH_LONG).show();
         }
         requestPermissions();
+
     }
 
     @Override
@@ -191,12 +221,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        Log.d(TAG, "onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: onDestroy: ");
-//        if(serviceIntent != null){
-//            Log.d(TAG, "onDestroy: 스탑 써비쓰");
-//            stopService(serviceIntent);
-//            serviceIntent = null;
-//        }
+        if(serviceIntent != null){
+            Log.d(TAG, "onDestroy: 메인액티비티 없어짐");
+            stopService(serviceIntent);
+            serviceIntent = null;
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -245,6 +274,7 @@ public class MainActivity extends AppCompatActivity {
         return missingPermissions.toArray(new String[missingPermissions.size()]);
     }
 
+
     public void setTargetLanguage(String idx){
         LoginApi service = RetrofitClientInstance.getRetrofitInstance().create(LoginApi.class);
         Call<TargetLangData> call = service.getTargetData(idx);
@@ -252,10 +282,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<TargetLangData> call, Response<TargetLangData> response) {
                 TargetLangData data = response.body();
+                JSONArray jsonArray = new JSONArray();
+                jsonArray.put(util.ReturnLangCode(data.targetLang));
+                if(util.ReturnLangCode(data.targetLang2)!=null){
+                    jsonArray.put(util.ReturnLangCode(data.targetLang2));
+                    if(util.ReturnLangCode(data.targetLang3)!=null){
+                        jsonArray.put(util.ReturnLangCode(data.targetLang3));
+                    }
+                }
                 SharedPreferences pref2 = getSharedPreferences("Translator", MODE_PRIVATE);
                 SharedPreferences.Editor editor2 = pref2.edit();
-                editor2.putString("targetlang" , util.ReturnLangCode(data.targetLang));
-                Log.d(TAG, "onResponse: "+util.ReturnLangCode(data.targetLang));
+                editor2.putString("targetlang", jsonArray.toString() );
                 editor2.apply();
             }
             @Override
@@ -264,4 +301,27 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+    @Override
+    public void onBackPressed() {
+        // 기존 뒤로가기 버튼의 기능을 막기위해 주석처리 또는 삭제
+        // super.onBackPressed();
+
+        // 마지막으로 뒤로가기 버튼을 눌렀던 시간에 2초를 더해 현재시간과 비교 후
+        // 마지막으로 뒤로가기 버튼을 눌렀던 시간이 2초가 지났으면 Toast Show
+        // 2000 milliseconds = 2 seconds
+        if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
+            backKeyPressedTime = System.currentTimeMillis();
+            toast = Toast.makeText(this, "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT);
+            toast.show();
+            return;
+        }
+        // 마지막으로 뒤로가기 버튼을 눌렀던 시간에 2초를 더해 현재시간과 비교 후
+        // 마지막으로 뒤로가기 버튼을 눌렀던 시간이 2초가 지나지 않았으면 종료
+        // 현재 표시된 Toast 취소
+        if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
+            super.onBackPressed();
+            toast.cancel();
+        }
+    }
 }

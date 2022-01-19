@@ -81,6 +81,9 @@ public class Activity_Notification extends AppCompatActivity {
         actionBar.hide();
         back = findViewById(R.id.back);
         recyclerView = findViewById(R.id.recycler);
+        back.setOnClickListener(v -> {
+            finish();
+        });
     }
     public void getNotification(int idx, int page, int limit) {
         NewsfeedApi service = RetrofitClientInstance.getRetrofitInstance().create(NewsfeedApi.class);

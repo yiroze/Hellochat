@@ -289,15 +289,12 @@
         app:layout_constraintTop_toTopOf="@+id/comment" />
 
     <View
+        android:layout_marginTop="5dp"
         android:id="@+id/view3"
         android:layout_width="match_parent"
         android:layout_height="20dp"
-        android:layout_marginTop="10dp"
         android:background="#ECECEC"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/heart" />
+        app:layout_constraintTop_toBottomOf="@+id/comment_recycler" />
 
     <TextView
         android:id="@+id/date"
@@ -315,10 +312,11 @@
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
         android:background="@drawable/player_back"
         app:layout_constraintEnd_toEndOf="@+id/contents"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/contents"
+        app:layout_constraintStart_toStartOf="@+id/profile"
         app:layout_constraintTop_toBottomOf="@+id/contents">
 
         <ImageView
@@ -351,6 +349,13 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/player_layout"
         app:layout_constraintTop_toBottomOf="@+id/player_layout" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="10dp"
+        android:id="@+id/comment_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/heart" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

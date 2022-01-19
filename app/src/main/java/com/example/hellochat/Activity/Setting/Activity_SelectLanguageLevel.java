@@ -31,6 +31,9 @@ public class Activity_SelectLanguageLevel extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         back = findViewById(R.id.back);
+        back.setOnClickListener(v -> {
+            finish();
+        });
         mRecycler = findViewById(R.id.level_recycler);
         Intent getIntent= getIntent();
         language_en = getIntent.getStringExtra("language_en");

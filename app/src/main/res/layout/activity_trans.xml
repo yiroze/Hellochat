@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="400dp"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/white"
     tools:context=".Activity.Feed.Activity_Trans">
@@ -24,6 +24,16 @@
     </LinearLayout>
     <!-- //end 타이틀바 -->
 
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:paddingLeft="20dp"
+        android:layout_gravity="end"
+        android:spinnerMode="dropdown"
+        android:textColor="@color/black"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"/>
     <!-- Notice -->
     <LinearLayout
         android:padding="24dp"

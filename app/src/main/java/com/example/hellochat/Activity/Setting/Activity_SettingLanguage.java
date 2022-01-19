@@ -27,6 +27,8 @@ import com.example.hellochat.R;
 import com.example.hellochat.RetrofitClientInstance;
 import com.example.hellochat.Util.Util;
 
+import org.json.JSONArray;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -82,6 +84,9 @@ public class Activity_SettingLanguage extends AppCompatActivity {
         delete_studylang2 = findViewById(R.id.delete_studylang2);
         delete_studylang3 = findViewById(R.id.delete_studylang3);
         back = findViewById(R.id.back);
+        back.setOnClickListener(v -> {
+            finish();
+        });
         ok = findViewById(R.id.ok);
         mylang_name = findViewById(R.id.mylang_name);
         mylang_name2 = findViewById(R.id.mylang_name2);
@@ -299,7 +304,7 @@ public class Activity_SettingLanguage extends AppCompatActivity {
                     Log.d(TAG, "onResponse: " + response.body().body);
                     Intent intent = new Intent(Activity_SettingLanguage.this, Activity_Setting.class);
                     setResult(RESULT_OK, intent);
-                    setTargetLanguage(mylang_name.getText().toString());
+                    setTargetLanguage(mylang_name.getText().toString(),mylang_name2.getText().toString(),mylang_name3.getText().toString());
                     finish();
                 }
 
@@ -393,10 +398,18 @@ public class Activity_SettingLanguage extends AppCompatActivity {
         return user;
     }
 
-    public void setTargetLanguage(String mylang) {
+    public void setTargetLanguage(String mylang ,String mylang2 ,String mylang3 ) {
         SharedPreferences pref2 = getSharedPreferences("Translator", MODE_PRIVATE);
         SharedPreferences.Editor editor2 = pref2.edit();
-        editor2.putString("targetlang", mylang );
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.put(util.ReturnLangCode(mylang));
+        if(util.ReturnLangCode(mylang2)!=null){
+            jsonArray.put(util.ReturnLangCode(mylang2));
+            if(util.ReturnLangCode(mylang3)!=null){
+                jsonArray.put(util.ReturnLangCode(mylang3));
+            }
+        }
+        editor2.putString("targetlang", jsonArray.toString() );
         editor2.apply();
     }
 

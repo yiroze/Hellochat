@@ -68,10 +68,12 @@
     >
 
         <RelativeLayout
+            android:visibility="gone"
+            android:animateLayoutChanges="true"
             android:id="@+id/relativelayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
+            android:paddingVertical="8dp"
             >
 
             <TextView
@@ -166,17 +168,6 @@
             android:orientation="vertical"
             android:visibility="gone"
             >
-
-            <!--            <Button-->
-<!--                android:id="@+id/save"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="32dp"-->
-<!--                android:layout_marginLeft="32dp"-->
-<!--                android:text="저장"-->
-<!--                app:layout_constraintBottom_toBottomOf="@+id/recording"-->
-<!--                app:layout_constraintStart_toEndOf="@+id/recording"-->
-<!--                app:layout_constraintTop_toTopOf="@+id/recording" />-->
 
             <TextView
                 android:id="@+id/time"

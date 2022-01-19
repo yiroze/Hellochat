@@ -126,6 +126,9 @@ public class Activity_SelectLanguage extends AppCompatActivity {
         });
         mAdapter.notifyDataSetChanged();
         onActivityResult();
+        back.setOnClickListener(v -> {
+            finish();
+        });
     }
 
 

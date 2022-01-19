@@ -107,7 +107,6 @@ public class Activity_Receive extends AppCompatActivity {
                 serviceIntent.putExtra("msg", String.valueOf(jsonObject));
                 startService(serviceIntent);
                 finish();
-
             }
         });
         getUserData(send_user_idx);

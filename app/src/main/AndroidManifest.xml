@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission
         android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
@@ -28,9 +27,13 @@
     <!-- tools:ignore="ScopedStorage" /> -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_SERVICE" />
     <uses-permission
         android:name="android.permission.CAPTURE_VIDEO_OUTPUT"
         tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -42,7 +45,15 @@
         android:theme="@style/Theme.Hellochat"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".Activity.Feed.Activity_Search"></activity>
+        <activity android:name=".Activity.videocall.VideoMain"></activity>
+        <activity
+            android:name=".Activity.Feed.Activity_modify_reply"
+            android:theme="@style/Dialog" />
+        <activity
+            android:name=".Activity.Feed.Activity_modify_comment2"
+            android:theme="@style/Dialog" />
+        <activity android:name=".Activity.Feed.Activity_Reply" />
+        <activity android:name=".Activity.Feed.Activity_Search" />
         <activity android:name=".Activity.Setting.Activity_SelectLanguageLevel" />
         <activity android:name=".Activity.Setting.Activity_SelectLanguage" />
         <activity android:name=".Activity.Setting.Activity_SettingHobby" />
@@ -105,14 +116,13 @@
         <activity android:name=".Activity.Login.Activity_Join2" />
         <activity android:name=".Activity.Login.Activity_Join" />
 
-        <receiver android:name=".AlarmReceiver" />
         <receiver
-            android:name=".RebootReceiver"
+            android:name=".Recever.AlarmReceiver"
             android:enabled="true"
-            android:exported="false"
+            android:exported="true"
             android:process=":remote">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="Restart" />
             </intent-filter>
         </receiver>
 
@@ -143,7 +153,6 @@
             android:label="@string/app_name"
             android:screenOrientation="fullUser"
             android:theme="@style/CallActivityTheme" />
-
         <activity
             android:name="com.soundcloud.android.crop.CropImageActivity"
             android:screenOrientation="portrait"
@@ -154,12 +163,10 @@
             android:authorities="com.example.hellochat.provider"
             android:exported="false"
             android:grantUriPermissions="true">
-
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-
     </application>
 
 </manifest>

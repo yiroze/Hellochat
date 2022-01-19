@@ -33,7 +33,9 @@ import androidx.core.content.FileProvider;
 
 import com.example.hellochat.Activity.Setting.Activity_SelectLanguage;
 import com.example.hellochat.DTO.Feed.UploadResult;
+import com.example.hellochat.DTO.Login.JoinData;
 import com.example.hellochat.Interface.JoinApi;
+import com.example.hellochat.MainActivity;
 import com.example.hellochat.R;
 import com.example.hellochat.RetrofitClientInstance;
 import com.example.hellochat.Util.Util;
@@ -53,6 +55,7 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Activity_Join2 extends AppCompatActivity {
 
@@ -73,29 +76,8 @@ public class Activity_Join2 extends AppCompatActivity {
     private File tempFile;
     String photoUri;
     int mylang_cnt, studylang_cnt;
-
-    private Boolean isPermission = true;
-//    String profile_uri;
-//    Spinner mylang_spinner, study_lang_spinner, level_spinner;
-//    Spinner mylang_spinner2, study_lang_spinner2, level_spinner2;
-//    Spinner mylang_spinner3, study_lang_spinner3, level_spinner3;
-//    EditText get_introduce;
-//    String[] mylang_data = {"", "Korean" , "English", "Chinese","Hindi", "French","Bengali", "Spanish", "Arabic", "Russian", "German", "Japanese", "Portuguese"};
-//    String[] study_lang_data = {"", "Korean" , "English", "Chinese","Hindi", "French","Bengali", "Spanish", "Arabic", "Russian", "German", "Japanese", "Portuguese"};
-//    String[] level_data = {"입문", "초급", "중급", "중상급", "상급", "고급"};
-//    String my_language = "";
-//    String my_language2 = "";
-//    String my_language3 = "";
-//    String study_language = "";
-//    String study_language2 = "";
-//    String study_language3 = "";
-//    int level, level2, level3;
-//    Button next;
-//    ImageView mylang_plus, study_lang_plus, delete_mylang2, delete_mylang3, delete_studylang2, delete_studylang3 ,qusetion_mark;
-//    int mylang_cnt = 0, studylang_cnt = 0;
-//    String TAG = this.getClass().getName();
-//    ImageView plus, profile;
-
+    String email, password, name;
+    Boolean isPermission;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +85,10 @@ public class Activity_Join2 extends AppCompatActivity {
         setContentView(R.layout.activity_join2);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
+        Intent getIntent = getIntent();
+        email = getIntent.getStringExtra("email");
+        password = getIntent.getStringExtra("password");
+        name = getIntent.getStringExtra("name");
         InitView();
         tedPermission();
         //사진업로드 받기
@@ -119,7 +105,7 @@ public class Activity_Join2 extends AppCompatActivity {
                         dialog.dismiss();
                     } else if (which == 1) {
                         takePhoto();
-                    } else if (which == 3) {
+                    } else if (which == 2) {
                         tempFile = null;
                         profile.setImageResource(R.drawable.no_profile);
                     }
@@ -301,11 +287,25 @@ public class Activity_Join2 extends AppCompatActivity {
                     studylang_name3.setText("");
                     study_lang_level3.setProgress(0);
                 }
-                if(tempFile != null){
-                    upload_file();
-                }else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(Activity_Join2.this);
+                builder.setTitle("가입하시겠습니까?");
+                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (tempFile != null) {
+                            upload_file();
+                        } else {
+                            Join();
+                        }
+                    }
+                });
+                builder.setNegativeButton("no", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
-                }
+                    }
+                });
+                builder.create().show();
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("모국어와 학습언어를 모두 선택해주세요");
@@ -314,6 +314,7 @@ public class Activity_Join2 extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                     }
                 });
+                builder.create().show();
             }
 
         });
@@ -546,6 +547,7 @@ public class Activity_Join2 extends AppCompatActivity {
                     assert uploadResult != null;
                     Log.d(TAG, "onResponse: " + uploadResult.toString());
                     photoUri = uploadResult.image;
+                    Join();
                 }
             }
 
@@ -555,5 +557,55 @@ public class Activity_Join2 extends AppCompatActivity {
             }
         });
     }
+
+    void Join() {
+        //Retrofit 인스턴스 생성
+        retrofit2.Retrofit retrofit = new retrofit2.Retrofit.Builder()
+                .baseUrl("http://3.37.204.197/hellochat/")    // baseUrl 등록
+                .addConverterFactory(GsonConverterFactory.create())  // Gson 변환기 등록
+                .build();
+        JoinApi service = retrofit.create(JoinApi.class);
+        Call<JoinData> call = service.getJoinData(
+                email, password, name,
+                mylang_name.getText().toString(), mylang_name2.getText().toString(), mylang_name3.getText().toString(),
+                studylang_name.getText().toString(), studylang_name2.getText().toString(), studylang_name3.getText().toString(),
+                study_lang_level.getProgress(), study_lang_level2.getProgress(), study_lang_level3.getProgress(),
+                introduce.getText().toString(), photoUri);
+        call.enqueue(new Callback<JoinData>() {
+            @Override
+            public void onResponse(Call<JoinData> call, Response<JoinData> response) {
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "onResponse: 통신성공");
+                    JoinData result = response.body();
+                    Log.d(TAG, "onResponse: " + result.msg);
+                    Log.d(TAG, "onResponse: " + result.toString());
+                    if (result.msg.equals("true")) {
+                        //쿼리가 성공 메인화면으로 인텐트
+                        Log.d(TAG, "onResponse: 통과");
+                        Intent intent = new Intent(Activity_Join2.this, MainActivity.class);
+                        intent.putExtra("idx", result.idx);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    } else {
+                        //쿼리에 문제가 생김
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Activity_Join2.this);
+                        builder.setTitle("서버에 문제가 생겼습니다");
+                        builder.setPositiveButton("ok", null);
+                        builder.create().show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JoinData> call, Throwable t) {
+                Log.d(TAG, "onFailure: 통신실패");
+                AlertDialog.Builder builder = new AlertDialog.Builder(Activity_Join2.this);
+                builder.setTitle("서버에 문제가 생겼습니다");
+                builder.setPositiveButton("ok", null);
+                builder.create().show();
+            }
+        });
+    }
+
 
 }

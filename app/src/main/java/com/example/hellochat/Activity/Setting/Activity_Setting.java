@@ -253,7 +253,7 @@ public class Activity_Setting extends AppCompatActivity implements OnMapReadyCal
                     studylang_level3.setProgress(0);
                     study_lang3_layout.setVisibility(View.GONE);
                 }
-                if (!mData.profile.equals("") && mData.profile != null) {
+                if (!mData.profile.equals("")) {
                     Log.d(TAG, "onResponse: onResponse: onResponse: onResponse: onResponse: onResponse: onResponse: onResponse: onResponse: ");
                     Glide.with(profile)
                             .load("http://3.37.204.197/hellochat/" + mData.profile)

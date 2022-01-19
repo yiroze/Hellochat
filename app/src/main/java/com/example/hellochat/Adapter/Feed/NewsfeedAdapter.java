@@ -17,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -185,6 +186,16 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
         if (datalist.get(position).record.equals("") || datalist.get(position).record == null) {
             holder.player.setVisibility(View.GONE);
         }
+        if(datalist.get(position).comment != null){
+            holder.comment.setAdapter(new FeedCommentAdapter(datalist.get(position).comment));
+            holder.comment.setLayoutManager(new LinearLayoutManager(c));
+        }else {
+            holder.comment.setVisibility(View.GONE);
+        }
+        if(datalist.get(position).contents.equals("")){
+            holder.contents.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
@@ -199,7 +210,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
         protected TextView name, mylang, mylang2, mylang3, study_lang, study_lang2, study_lang3, heart_count, comment_count, contents, date;
         protected ProgressBar mylang_level, study_lang_level, study_lang_level2, study_lang_level3;
         protected ImageView heart, profile, more, player_control;
-        protected RecyclerView image;
+        protected RecyclerView image, comment;
         protected ConstraintLayout player;
         protected SeekBar seekBar;
         boolean isplaying;
@@ -233,6 +244,7 @@ public class NewsfeedAdapter extends RecyclerView.Adapter<NewsfeedAdapter.Newsfe
             this.player = itemView.findViewById(R.id.player_layout);
             this.player_control = itemView.findViewById(R.id.player_control);
             this.seekBar = itemView.findViewById(R.id.SeekBar);
+            this.comment = itemView.findViewById(R.id.comment_recycler);
             
             
             contents.setOnLongClickListener(new View.OnLongClickListener() {

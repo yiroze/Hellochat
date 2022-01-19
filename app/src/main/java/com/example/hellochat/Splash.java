@@ -18,7 +18,7 @@ public class Splash extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
-        int sec = 2500; //2.5초
+        int sec = 1000; //1초
         SharedPreferences pref = getSharedPreferences("LOGIN", MODE_PRIVATE);
         String Login =  pref.getString("Login_data" , "");
 
